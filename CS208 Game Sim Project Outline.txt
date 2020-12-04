@@ -1,0 +1,52 @@
+Classes{
+	Map
+		Room
+	Player
+	Key
+	GUI
+	Controller
+	}
+	
+Map{
+	2D array of room objects
+	
+	}
+	
+Room{
+	boolean isLocked - if a room is locked
+	int door - door value to a matching key value
+	hashtable players - stores all the players
+	boolean isTrapped?
+	
+	
+	returns players in room - getPlayers();
+	boolean unlock room();
+	}
+	
+Player - generate players at the bottom{
+	arrayList keys (int keys for the K.I.S.S. method)
+	reference to a room - set to null if HP = 0
+	int hp
+	
+	}
+	
+Key{
+	reference to a room
+	damages other players upon pickup
+	}
+	
+GUI{
+	print everything to the screen
+	}
+	
+Controller - initalizes everything{
+	hashtable rooms
+	hashtable players
+	timer for entire game
+	}
+	
+Final Room - extends Room{
+	generate at top of map
+	}
+	
+OBJECT OF THE GAME? - Get out of the maze of rooms first or with the most HP
