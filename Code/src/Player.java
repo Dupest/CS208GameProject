@@ -18,6 +18,12 @@ public class Player {
         currentRoom = null;
         playersMap = new HashMap<>();
     }
+
+    public void playerDead(){
+        if(healthPool <= 0){
+            currentRoom = null;
+        }
+    }
     
     public void trapTriggered(){
         healthPool--;
