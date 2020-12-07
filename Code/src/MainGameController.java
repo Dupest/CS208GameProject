@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 
 public class MainGameController {
 
@@ -51,7 +51,20 @@ public class MainGameController {
 
     public void mapInitializing(){
         //assumes that there are 2 players and a 9 x 9 map
+        Random rand = new Random();
 
+        int traps = 10;
+        int roomNumber = 1;
+        for(int i = 0; i < 81; i++){
+            if(rand.nextInt(101) < 50 || traps >= 0){
+                traps--;
+                mapLayout.put(roomNumber, new Room(false, roomNumber, true));
+                roomNumber++;
+            } else {
+                mapLayout.put(roomNumber, new Room(false, roomNumber, false));
+                roomNumber++;
+            }
+        }
     }
 
     public void mapInitializing(int players, int rooms){
