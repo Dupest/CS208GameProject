@@ -56,4 +56,8 @@ public class Room {
     public int hashCode() {
         return Objects.hash(doorID, isATrap);
     }
+    
+    public void trapTriggered(){
+        //disables the trap for the room and hurts the player crossing into it
+    }
 }
