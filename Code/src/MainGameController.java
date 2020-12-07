@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class MainGameController {
 
@@ -23,6 +24,8 @@ public class MainGameController {
 
     @FXML
     private GridPane mainGridPane;
+
+    private HashMap<Integer, Room>  mapLayout;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -41,6 +44,18 @@ public class MainGameController {
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
         mainGridPane.heightProperty().addListener(evt -> doStuff());
         mainGridPane.widthProperty().addListener(evt -> doStuff());
+
+        //Creates the "map" of rooms
+        mapLayout = new HashMap<>();
+    }
+
+    public void mapInitializing(){
+        //assumes that there are 2 players and a 9 x 9 map
+
+    }
+
+    public void mapInitializing(int players, int rooms){
+        //TODO scaling traps with map size and player
     }
 
     /**
@@ -130,4 +145,6 @@ public class MainGameController {
     public void gridClicked(MouseEvent mouseEvent) {
         doStuff();
     }
+
+    //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
 }

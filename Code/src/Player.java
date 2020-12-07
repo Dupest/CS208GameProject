@@ -32,6 +32,6 @@ public class Player {
     public int getHealthPool(){
         return healthPool;
     }
-    }
+}
 
 
