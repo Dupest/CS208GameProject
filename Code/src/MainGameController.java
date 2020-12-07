@@ -26,6 +26,8 @@ public class MainGameController {
     private GridPane mainGridPane;
 
     private HashMap<Integer, Room>  mapLayout;
+    private HashMap<Integer, Key> keyList;
+    private HashMap<Integer, Player> playerList;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -45,16 +47,25 @@ public class MainGameController {
         mainGridPane.heightProperty().addListener(evt -> doStuff());
         mainGridPane.widthProperty().addListener(evt -> doStuff());
 
-        //Creates the "map" of rooms
+        //Creates the "map" of rooms, players, and Keys
         mapLayout = new HashMap<>();
+        keyList = new HashMap<>();
+        playerList = new HashMap<>();
     }
-
+    /*
+    initializes the map depending on the size of the map and
+    number of players. By default, it generates a 9 x 9 map
+    and 2 players
+     */
     public void mapInitializing(){
         //assumes that there are 2 players and a 9 x 9 map
         Random rand = new Random();
 
+        //traps is max number of traps
         int traps = 10;
         int roomNumber = 1;
+
+        //loop initializes all rooms
         for(int i = 0; i < 81; i++){
             if(rand.nextInt(101) < 50 || traps >= 0){
                 traps--;
@@ -67,6 +78,14 @@ public class MainGameController {
                 roomNumber++;
             }
         }
+
+        //generates final key =
+        keyList.put(81, new Key(mapLayout.get(81) ,1));
+
+        //generates the two players in the top 2 rooms
+        playerList.put(1, new Player(mapLayout.get(rand.nextInt(10))));
+        playerList.put(2, new Player(mapLayout.get(rand.nextInt(10))));
+
     }
 
     public void mapInitializing(int players, int rooms){

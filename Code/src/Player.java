@@ -19,6 +19,13 @@ public class Player {
         playersMap = new HashMap<>();
     }
 
+    public Player(Room initalRoom){
+        healthPool = DEFAULT_HEALTH;
+        keyList = new ArrayList();
+        currentRoom = null;
+        playersMap = new HashMap<>();
+    }
+
     public void playerDead(){
         if(healthPool <= 0){
             currentRoom = null;
