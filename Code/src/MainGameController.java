@@ -60,6 +60,8 @@ public class MainGameController {
                 traps--;
                 mapLayout.put(roomNumber, new Room(false, roomNumber, true));
                 roomNumber++;
+            }else if(roomNumber == 81){
+                mapLayout.put(roomNumber, new Room(true, roomNumber, false));
             } else {
                 mapLayout.put(roomNumber, new Room(false, roomNumber, false));
                 roomNumber++;
