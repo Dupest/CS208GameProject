@@ -28,4 +28,10 @@ public class Player {
     public void trapTriggered(){
         healthPool--;
     }
+
+    public int getHealthPool(){
+        return healthPool;
     }
+    }
+
+
