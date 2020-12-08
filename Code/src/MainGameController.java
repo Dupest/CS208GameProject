@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import java.awt.*;
 import java.util.*;
 
+//Edited By Svetozar Draganitchki
 public class MainGameController {
 
     //We keep track of the canvases and gridPane node refs since they're made dynamically
@@ -124,7 +125,7 @@ public class MainGameController {
 
                 //Returns a graphics object of the canvas for drawing
                 GraphicsContext gc = newMapImage.getGraphicsContext2D();
-
+                
                 //My custom circle class from the last project we did because I wanted a quick lazy drawing to show this off.
                 CircleWithText mapCircle = new CircleWithText("Map (" + i + ", " + k + ")", new Point2D(newMapImage.getWidth()/2.0,newMapImage.getHeight()/2.0));
 
