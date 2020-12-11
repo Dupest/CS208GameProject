@@ -56,7 +56,7 @@ public class MainGameController {
     /*
     initializes the map depending on the size of the map and
     number of players. By default, it generates a 9 x 9 map
-    and 2 players
+    and 2 players (Justin Lamberson)
      */
     public void mapInitializing(){
         //assumes that there are 2 players and a 9 x 9 map
@@ -89,9 +89,7 @@ public class MainGameController {
 
     }
 
-    public void mapInitializing(int players, int rooms){
-        //TODO scaling traps with map size and player
-    }
+
 
     /**
      * Draw things

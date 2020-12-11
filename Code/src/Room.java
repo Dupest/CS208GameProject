@@ -1,11 +1,12 @@
-import java.util.Objects;
+import java.util.*;
 
 // Edited By Svetozar Draganitchki
 public class Room {
     private boolean isLocked;
     private int doorID;
-    //TODO: Hash Table Implementation
     private boolean isATrap;
+
+    HashMap<Integer, Player> playersInside = new HashMap<>(); //TODO check hashmap implementation
     
     private Key isKey;
     private int x,y;
@@ -93,8 +94,36 @@ public class Room {
     public int hashCode() {
         return Objects.hash(doorID, isATrap);
     }
-    
-    public void trapTriggered(){
-        //disables the trap for the room and hurts the player crossing into it
+
+    /*checks for a trap when a player comes into a room
+     *if room does have a trap, the player takes a random amount damage
+     * Damage taken can be no less than 1
+     * In addition
+     * Justin Lamberson
+     */
+    public void playerEntry(int playerID, Player player){
+        playersInside.put(playerID, player);
+        Random rand = new Random();
+        int damageTaken = rand.nextInt(5);
+        if(isATrap){
+            if(damageTaken == 0){ //check prevents the damage taken not to be less than 1
+                player.trapTriggered();
+            } else {
+                player.trapTriggered(damageTaken);
+            }
+        }
     }
+
+    /*
+     * method for removing a player from a room and returning that player
+     * -Justin Lamberson
+     * TODO should table be rehashed in this method? -JL
+     */
+    public Player playerExiting(int playerID){
+        Player player = playersInside.get(playerID);
+        playersInside.remove(playerID);
+        return player;
+    }
+
+
 }
