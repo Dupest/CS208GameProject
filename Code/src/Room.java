@@ -114,7 +114,7 @@ public class Room {
                 isATrap = false;
             }
         }
-        playersInside.
+        playersInside.put(playerID, player);
     }
 
     /*
