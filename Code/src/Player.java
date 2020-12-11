@@ -3,7 +3,8 @@ import java.util.HashMap;
 
 //Edited By Svetozar Draganitchki
 public class Player {
-    
+
+    private CircleWithText playerRender;
     private static final int DEFAULT_HEALTH = 15;
     private HashMap<String, String> playersMap; ///I think this might be useless -Svet
     //What is this used for -Justin L
@@ -45,7 +46,6 @@ public class Player {
             currentRoom = null;
         }
     }
-
     /*
      *if a trap is triggered, by default, damage taken is one
      */

@@ -15,10 +15,12 @@ import java.util.Random;
  * 
  */
 public class GameLogic implements KeyListener{
-    
-    private HashMap<Integer, Room>  mapLayout;
+    //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
+    private HashMap<Integer, Room>  mapLayout;                                          //TODO: Change to 2D array potentially.
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
+    private static final int MAXPLAYERS = 4;
+
     
     public GameLogic(){
         mapLayout = new HashMap<Integer, Room> ();

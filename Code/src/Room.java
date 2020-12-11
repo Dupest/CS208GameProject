@@ -1,3 +1,5 @@
+import javafx.scene.shape.Rectangle;
+
 import java.util.*;
 
 // Edited By Svetozar Draganitchki
@@ -5,6 +7,7 @@ public class Room {
     private boolean isLocked;
     private int doorID;
     private boolean isATrap;
+    private Rectangle roomRender;
 
     HashMap<Integer, Player> playersInside = new HashMap<>(); //TODO check hashmap implementation
     
@@ -104,6 +107,7 @@ public class Room {
     public void playerEntry(int playerID, Player player){
         playersInside.put(playerID, player);
         Random rand = new Random();
+        //Math.random() * (max-min+1) + min   - Will return in range
         int damageTaken = rand.nextInt(5);
         if(isATrap){
             if(damageTaken == 0){ //check prevents the damage taken not to be less than 1
