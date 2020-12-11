@@ -20,11 +20,13 @@ public class Room {
         this.doorID = -1;
         this.isATrap = false;
         this.isKey = null;
+        this.roomRender = null;
     }
     public Room(boolean isLocked, int doorID, boolean isATrap) {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
+        this.roomRender = null;
     }
     
     //By Svetozar Draganitchki
@@ -34,6 +36,7 @@ public class Room {
         this.isATrap = isATrap;
         this.x = x;
         this.y = y;
+        this.roomRender = null;
     }
     //By Svetozar Draganitchki
     public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey) {
@@ -41,6 +44,7 @@ public class Room {
         this.doorID = doorID;
         this.isATrap = isATrap;
         this.isKey = isKey;
+        this.roomRender = null;
     }
     //By Svetozar Draganitchki
     public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey, int x, int y) {
@@ -50,6 +54,7 @@ public class Room {
         this.isKey = isKey;
         this.x = x;
         this.y = y;
+        this.roomRender = null;
     }
 
     public boolean isLocked() {
@@ -135,4 +140,23 @@ public class Room {
     //TODO move triggered trap to room
 
 
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public Rectangle getRoomRender() {
+        return roomRender;
+    }
+
+    public void setRoomRender(Rectangle roomRender) {
+        this.roomRender = roomRender;
+    }
+
+    public HashMap<Integer, Player> getPlayersInside() {
+        return playersInside;
+    }
+
+    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
+        this.playersInside = playersInside;
+    }
 }

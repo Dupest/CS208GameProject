@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
 import java.util.*;
@@ -17,7 +19,7 @@ public class MainGameController {
     //We keep track of the canvases and gridPane node refs since they're made dynamically
     private Node[][] gridPaneNodes;
     private Node[][] canvases;
-
+    private GameLogic gameLogic;
 
     //References to our main window objects for easier coding/listeners yada-yada
     @FXML
@@ -26,9 +28,11 @@ public class MainGameController {
     @FXML
     private GridPane mainGridPane;
 
-    private HashMap<Integer, Room>  mapLayout;
+    private Room[][]  mapLayout;
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
+
+    private static final int PADDING = 10;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -42,6 +46,7 @@ public class MainGameController {
         //Init arrays
         gridPaneNodes = new Node[numRows][numColumns];
         canvases = new Node[numRows][numColumns];
+        mapLayout = new Room[numRows][numColumns];
         populateArray();
 
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
@@ -49,9 +54,9 @@ public class MainGameController {
         mainGridPane.widthProperty().addListener(evt -> doStuff());
 
         //Creates the "map" of rooms, players, and Keys
-        mapLayout = new HashMap<>();
         keyList = new HashMap<>();
         playerList = new HashMap<>();
+        mapInitializing();
     }
     /*
     initializes the map depending on the size of the map and
@@ -59,6 +64,8 @@ public class MainGameController {
     and 2 players (Justin Lamberson)
      */
     public void mapInitializing(){
+        int numColumns = mainGridPane.getColumnConstraints().size();
+        int numRows  = mainGridPane.getRowConstraints().size();
         //assumes that there are 2 players and a 9 x 9 map
         Random rand = new Random();
 
@@ -67,25 +74,30 @@ public class MainGameController {
         int roomNumber = 1;
 
         //loop initializes all rooms
-        for(int i = 0; i < 81; i++){
-            if(rand.nextInt(101) < 50 || traps >= 0){
-                traps--;
-                mapLayout.put(roomNumber, new Room(false, roomNumber, true));
-                roomNumber++;
-            }else if(roomNumber == 81){
-                mapLayout.put(roomNumber, new Room(true, roomNumber, false));
-            } else {
-                mapLayout.put(roomNumber, new Room(false, roomNumber, false));
+        for(int i = 0; i < numRows; i++){
+            for(int k = 0; k < numColumns; k++){
+                if(rand.nextInt(101) < 50 || traps >= 0){
+                    traps--;
+                    mapLayout[i][k] = new Room(false, roomNumber, true);
+
+                //If last room ie (8,8)
+                }else if(i == numRows-1 && k == numColumns-1){
+
+                    //Make special constructor for the final room so this is different from else loop
+                    mapLayout[i][k] = new Room(true, roomNumber, false);
+                } else {
+                    mapLayout[i][k] = new Room(false, roomNumber, false);
+                }
                 roomNumber++;
             }
         }
-
+        System.out.println(roomNumber);
         //generates final key =
-        keyList.put(81, new Key(mapLayout.get(81) ,1));
+        //keyList.put(81, new Key(mapLayout[8][8] ,1));
 
         //generates the two players in the top 2 rooms
-        playerList.put(1, new Player(mapLayout.get(rand.nextInt(10))));
-        playerList.put(2, new Player(mapLayout.get(rand.nextInt(10))));
+        playerList.put(1, new Player(mapLayout[0][0]));
+        playerList.put(2, new Player(mapLayout[0][1]));
 
     }
 
@@ -114,8 +126,8 @@ public class MainGameController {
         mainGridPane.getChildren().add(0, node);
 
         //For each node within the gridpane draw a circle representing a room.
-        for(int i = 0; i < numColumns; i++){
-            for(int k = 0; k < numRows; k++){
+        for(int i = 0; i < numRows; i++){
+            for(int k = 0; k < numColumns; k++){
 
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
                 Canvas newMapImage = new Canvas(winWidth/numRows, winHeight/numColumns);
@@ -123,33 +135,37 @@ public class MainGameController {
 
                 //Returns a graphics object of the canvas for drawing
                 GraphicsContext gc = newMapImage.getGraphicsContext2D();
-                
+                Rectangle newRect = new Rectangle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
+
+                mapLayout[i][k].setRoomRender(newRect);
+                drawRectangle(gc, newRect);
                 //My custom circle class from the last project we did because I wanted a quick lazy drawing to show this off.
-                CircleWithText mapCircle = new CircleWithText("Map (" + i + ", " + k + ")", new Point2D(newMapImage.getWidth()/2.0,newMapImage.getHeight()/2.0));
+                //CircleWithText mapCircle = new CircleWithText("Map (" + i + ", " + k + ")", new Point2D(newMapImage.getWidth()/2.0,newMapImage.getHeight()/2.0));
 
-                //Default radius on the circles is 40, but if we start to get smaller screen sizes to where each node only has 80 pixels of room in any direction, we adjust the radius.
-                if(newMapImage.getHeight() < mapCircle.getDefRadius()*2 || newMapImage.getWidth() < mapCircle.getDefRadius()*2){
-
-                    //We take the smaller of the two values
-                    double smallerBound = Math.min(newMapImage.getHeight(), newMapImage.getWidth());
-                    //double smallerBound =(newMapImage.getHeight() > newMapImage.getWidth()) ? newMapImage.getWidth(): newMapImage.getHeight();
-
-                    //Radius becomes half of the smallest distance to an edge.
-                    mapCircle.setRadius((int)(smallerBound/2.0));
-                    mapCircle.drawCusRadius(gc);
-                }
-
-                //Otherwise we draw it normally
-                else
-                    mapCircle.draw(gc);
+//                //Default radius on the circles is 40, but if we start to get smaller screen sizes to where each node only has 80 pixels of room in any direction, we adjust the radius.
+//                if(newMapImage.getHeight() < mapCircle.getDefRadius()*2 || newMapImage.getWidth() < mapCircle.getDefRadius()*2){
+//
+//                    //We take the smaller of the two values
+//                    double smallerBound = Math.min(newMapImage.getHeight(), newMapImage.getWidth());
+//                    //double smallerBound =(newMapImage.getHeight() > newMapImage.getWidth()) ? newMapImage.getWidth(): newMapImage.getHeight();
+//
+//                    //Radius becomes half of the smallest distance to an edge.
+//                    mapCircle.setRadius((int)(smallerBound/2.0));
+//                    mapCircle.drawCusRadius(gc);
+//                }
+//
+//                //Otherwise we draw it normally
+//                else
+//                    mapCircle.draw(gc);
                 //System.out.println("Circle coords: " + mapCircle.getPoint());
-
-                //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
                 Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
             }
         }
+        //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
+
     }
 
     private void populateArray(){
@@ -177,6 +193,16 @@ public class MainGameController {
     //Listener Wrapper, we don't care about the MouseEvent, but JavaFX requires it of its controller listener methods. Then we simply call doStuff();  -- Unused Right now
     public void gridClicked(MouseEvent mouseEvent) {
         doStuff();
+    }
+
+    private void drawRectangle(GraphicsContext gc,Rectangle rect){
+        gc.setFill(Color.DARKGREY);
+        gc.fillRect(rect.getX()-rect.getWidth()/2.0,
+                rect.getY()-rect.getHeight()/2.0,
+                rect.getWidth(),
+                rect.getHeight());
+        gc.setFill(Color.GREEN);
+        gc.setStroke(Color.ORANGE);
     }
 
     //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
