@@ -8,7 +8,7 @@ public class Room {
     private boolean isATrap;
     
     private Key isKey;
-    private int x,y;
+//    private int x,y;
 
 
     public Room(){
@@ -23,14 +23,14 @@ public class Room {
         this.isATrap = isATrap;
     }
     
-    //By Svetozar Draganitchki
-    public Room(boolean isLocked, int doorID, boolean isATrap, int x, int y) {
-        this.isLocked = isLocked;
-        this.doorID = doorID;
-        this.isATrap = isATrap;
-        this.x = x;
-        this.y = y;
-    }
+//    //By Svetozar Draganitchki
+//    public Room(boolean isLocked, int doorID, boolean isATrap, int x, int y) {
+//        this.isLocked = isLocked;
+//        this.doorID = doorID;
+//        this.isATrap = isATrap;
+//        this.x = x;
+//        this.y = y;
+//    }
     //By Svetozar Draganitchki
     public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey) {
         this.isLocked = isLocked;
@@ -39,14 +39,14 @@ public class Room {
         this.isKey = isKey;
     }
     //By Svetozar Draganitchki
-    public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey, int x, int y) {
-        this.isLocked = isLocked;
-        this.doorID = doorID;
-        this.isATrap = isATrap;
-        this.isKey = isKey;
-        this.x = x;
-        this.y = y;
-    }
+//    public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey, int x, int y) {
+//        this.isLocked = isLocked;
+//        this.doorID = doorID;
+//        this.isATrap = isATrap;
+//        this.isKey = isKey;
+//        this.x = x;
+//        this.y = y;
+//    }
 
     public boolean isLocked() {
         return isLocked;
@@ -72,13 +72,13 @@ public class Room {
         isATrap = ATrap;
     }
     
-    public int getX(){
-        return x;
-    }
-    
-    public int getY(){
-        return y;
-    }
+//    public int getX(){
+//        return x;
+//    }
+//    
+//    public int getY(){
+//        return y;
+//    }
 
     /*TODO: Reconsider these two. We probably don't need to check for the booleans because they'll change. We can, but room.doorID should be unique from it's implementation anyway  */
     @Override

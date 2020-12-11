@@ -50,38 +50,38 @@ public class GameLogic implements KeyListener{
         int roomNumber = 1;
 
         //loop initializes all rooms
-//        for(int i = 0; i < 81; i++){
-//            if(rand.nextInt(101) < 50 || traps >= 0){
-//                traps--;
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }else if(roomNumber == 81){
-//                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//            } else {
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }
-//        }
-        //loop initializes all rooms
-        for(int y = 0 ; y < 9; y ++)
-        {
-            for(int x = 0 ; x < 9; x ++)
-            {
-                if(rand.nextInt(10) <= 5 || traps >= 0){
-                    mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
-                    traps --;
-                    roomNumber ++;
-                } else if (x == 8 && y == 0){
-                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
-                    roomNumber++;
-                }
-                else
-                {
-                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
-                    roomNumber++;
-                }
+        for(int i = 0; i < 81; i++){
+            if(rand.nextInt(101) < 50 || traps >= 0){
+                traps--;
+                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
+                roomNumber++;
+            }else if(roomNumber == 81){
+                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
+            } else {
+                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
+                roomNumber++;
             }
         }
+        //loop initializes all rooms
+//        for(int y = 0 ; y < 9; y ++)
+//        {
+//            for(int x = 0 ; x < 9; x ++)
+//            {
+//                if(rand.nextInt(10) <= 5 || traps >= 0){
+//                    mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
+//                    traps --;
+//                    roomNumber ++;
+//                } else if (x == 8 && y == 0){
+//                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
+//                    roomNumber++;
+//                }
+//                else
+//                {
+//                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
+//                    roomNumber++;
+//                }
+//            }
+//        }
         
         //generates final key =
         keyList.put(81, new Key(mapLayout.get(81) ,1));
@@ -101,45 +101,45 @@ public class GameLogic implements KeyListener{
     }
     
     //Only to be used after implmenting mapInitializing() not sure about using this, ***** DON'T LIKE THIS ******
-    public int[][] to2DArray(){
-        int[][] room2d = new int[9][9];
-        int x = 0;
-        int y = 0;
-        for(HashMap.Entry<Integer, Room> entry : mapLayout.entrySet())
-        {
-            if(x >= 9)
-            {
-                if(y >= 9)
-                {
-                    room2d[x][y] = entry.getKey();
-                    y = 0;
-                    x = 0;
-                }
-                else
-                {
-                    room2d[x][y] = entry.getKey();
-                    y++;
-                    x = 0;
-                }
-            }
-            else
-            {
-               if(y >= 9)
-                {
-                    room2d[x][y] = entry.getKey();
-                    y = 0;
-                    x++;
-                }
-                else
-                {
-                    room2d[x][y] = entry.getKey();
-                    y++;
-                    x++;
-                }
-            }
-        }
-        return room2d;
-    }
+//    public int[][] to2DArray(){
+//        int[][] room2d = new int[9][9];
+//        int x = 0;
+//        int y = 0;
+//        for(HashMap.Entry<Integer, Room> entry : mapLayout.entrySet())
+//        {
+//            if(x >= 9)
+//            {
+//                if(y >= 9)
+//                {
+//                    room2d[x][y] = entry.getKey();
+//                    y = 0;
+//                    x = 0;
+//                }
+//                else
+//                {
+//                    room2d[x][y] = entry.getKey();
+//                    y++;
+//                    x = 0;
+//                }
+//            }
+//            else
+//            {
+//               if(y >= 9)
+//                {
+//                    room2d[x][y] = entry.getKey();
+//                    y = 0;
+//                    x++;
+//                }
+//                else
+//                {
+//                    room2d[x][y] = entry.getKey();
+//                    y++;
+//                    x++;
+//                }
+//            }
+//        }
+//        return room2d;
+//    }
 
     public void mapInitializing(int players, int rooms){
         //TODO scaling traps with map size and player
