@@ -6,6 +6,7 @@ public class Player {
     
     private static final int DEFAULT_HEALTH = 15;
     private HashMap<String, String> playersMap; ///I think this might be useless -Svet
+    //What is this used for -Justin L
 
     //TODO: Pick one of these two
     private ArrayList<Key> keyList; 
@@ -44,9 +45,20 @@ public class Player {
             currentRoom = null;
         }
     }
-    
+
+    /*
+     *if a trap is triggered, by default, damage taken is one
+     */
     public void trapTriggered(){
         healthPool--;
+    }
+
+    /*
+     * Overloaded method does the same thing as the default method
+     * but, it allows the damage taken to be set
+     */
+    public void trapTriggered(int damage){
+        healthPool -= damage;
     }
 
     public int getHealthPool(){
