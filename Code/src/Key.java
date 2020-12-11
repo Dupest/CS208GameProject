@@ -27,7 +27,7 @@ public class Key {
     public Room getMyRoom() {
         return roomUnlock;
     }
-    //Jesus loves you
+
     public void setMyRoom(Room myRoom) {
         this.roomUnlock = myRoom;
     }

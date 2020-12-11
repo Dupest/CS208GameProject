@@ -112,10 +112,13 @@ public class Room {
         if(isATrap){
             if(damageTaken == 0){ //check prevents the damage taken not to be less than 1
                 player.trapTriggered();
+                isATrap = false;
             } else {
                 player.trapTriggered(damageTaken);
+                isATrap = false;
             }
         }
+        playersInside.put(playerID, player);
     }
 
     /*
@@ -128,6 +131,8 @@ public class Room {
         playersInside.remove(playerID);
         return player;
     }
+
+    //TODO move triggered trap to room
 
 
 }
