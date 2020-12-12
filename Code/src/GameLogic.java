@@ -1,4 +1,3 @@
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -15,10 +14,12 @@ import java.util.Random;
  * 
  */
 public class GameLogic implements KeyListener{
-    
-    private HashMap<Integer, Room>  mapLayout;
+    //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
+    private HashMap<Integer, Room>  mapLayout;                                          //TODO: Change to 2D array potentially.
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
+    private static final int MAXPLAYERS = 4;
+
     
     public GameLogic(){
         mapLayout = new HashMap<Integer, Room> ();
@@ -50,38 +51,38 @@ public class GameLogic implements KeyListener{
         int roomNumber = 1;
 
         //loop initializes all rooms
-        for(int i = 0; i < 81; i++){
-            if(rand.nextInt(101) < 50 || traps >= 0){
-                traps--;
-                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
-                roomNumber++;
-            }else if(roomNumber == 81){
-                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-            } else {
-                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-                roomNumber++;
-            }
-        }
-        //loop initializes all rooms
-//        for(int y = 0 ; y < 9; y ++)
-//        {
-//            for(int x = 0 ; x < 9; x ++)
-//            {
-//                if(rand.nextInt(10) <= 5 || traps >= 0){
-//                    mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
-//                    traps --;
-//                    roomNumber ++;
-//                } else if (x == 8 && y == 0){
-//                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
-//                    roomNumber++;
-//                }
-//                else
-//                {
-//                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
-//                    roomNumber++;
-//                }
+//        for(int i = 0; i < 81; i++){
+//            if(rand.nextInt(101) < 50 || traps >= 0){
+//                traps--;
+//                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
+//                roomNumber++;
+//            }else if(roomNumber == 81){
+//                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
+//            } else {
+//                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
+//                roomNumber++;
 //            }
 //        }
+        //loop initializes all rooms
+        for(int y = 0 ; y < 9; y ++)
+        {
+            for(int x = 0 ; x < 9; x ++)
+            {
+                if(rand.nextInt(10) <= 5 || traps >= 0){
+                    mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
+                    traps --;
+                    roomNumber ++;
+                } else if (x == 8 && y == 0){
+                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
+                    roomNumber++;
+                }
+                else
+                {
+                    mapLayout.put(roomNumber, new Room(true, roomNumber, false, x, y));
+                    roomNumber++;
+                }
+            }
+        }
         
         //generates final key =
         keyList.put(81, new Key(mapLayout.get(81) ,1));
@@ -90,7 +91,7 @@ public class GameLogic implements KeyListener{
         for(int i = 1; i <= 10; i++)
         {
             mapLayout.get(i).setLock(true);
-            keyList.put(i, new Key(mapLayout.get(i),1));
+            keyList.put(i, new Key(mapLayout.get(rand.nextInt(81)),1));
         }
         
 
@@ -101,45 +102,45 @@ public class GameLogic implements KeyListener{
     }
     
     //Only to be used after implmenting mapInitializing() not sure about using this, ***** DON'T LIKE THIS ******
-//    public int[][] to2DArray(){
-//        int[][] room2d = new int[9][9];
-//        int x = 0;
-//        int y = 0;
-//        for(HashMap.Entry<Integer, Room> entry : mapLayout.entrySet())
-//        {
-//            if(x >= 9)
-//            {
-//                if(y >= 9)
-//                {
-//                    room2d[x][y] = entry.getKey();
-//                    y = 0;
-//                    x = 0;
-//                }
-//                else
-//                {
-//                    room2d[x][y] = entry.getKey();
-//                    y++;
-//                    x = 0;
-//                }
-//            }
-//            else
-//            {
-//               if(y >= 9)
-//                {
-//                    room2d[x][y] = entry.getKey();
-//                    y = 0;
-//                    x++;
-//                }
-//                else
-//                {
-//                    room2d[x][y] = entry.getKey();
-//                    y++;
-//                    x++;
-//                }
-//            }
-//        }
-//        return room2d;
-//    }
+    public int[][] to2DArray(){
+        int[][] room2d = new int[9][9];
+        int x = 0;
+        int y = 0;
+        for(HashMap.Entry<Integer, Room> entry : mapLayout.entrySet())
+        {
+            if(x >= 9)
+            {
+                if(y >= 9)
+                {
+                    room2d[x][y] = entry.getKey();
+                    y = 0;
+                    x = 0;
+                }
+                else
+                {
+                    room2d[x][y] = entry.getKey();
+                    y++;
+                    x = 0;
+                }
+            }
+            else
+            {
+               if(y >= 9)
+                {
+                    room2d[x][y] = entry.getKey();
+                    y = 0;
+                    x++;
+                }
+                else
+                {
+                    room2d[x][y] = entry.getKey();
+                    y++;
+                    x++;
+                }
+            }
+        }
+        return room2d;
+    }
 
     /*
      * method allows there to be a set amount of both
@@ -195,7 +196,7 @@ public class GameLogic implements KeyListener{
         for(int i = 1; i <= 10; i++)
         {
             mapLayout.get(i).setLock(true);
-            keyList.put(i, new Key(mapLayout.get(i),1));
+            keyList.put(i, new Key(mapLayout.get(rand.nextInt(81)),1));
         }
 
 
@@ -258,7 +259,7 @@ public class GameLogic implements KeyListener{
         for(int i = 1; i <= 10; i++)
         {
             mapLayout.get(i).setLock(true);
-            keyList.put(i, new Key(mapLayout.get(i),1));
+            keyList.put(i, new Key(mapLayout.get(rand.nextInt(81)),1));
         }
 
 
@@ -266,7 +267,35 @@ public class GameLogic implements KeyListener{
         playerList.put(1, new Player(mapLayout.get(rand.nextInt(10)))); // playerList.put(1, new Player(0,8));
         playerList.put(2, new Player(mapLayout.get(rand.nextInt(10)))); // playerList.put(1, new Player(0,7));
     }
+    /*
+        By Svetozar Draganitchki
+        method that checks if player can enter room
+    */
+    public boolean canEnter(int roomNumber,Player p){
+        if(mapLayout.get(roomNumber).isLocked()){
+            if(hasKey(roomNumber,p))
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+          return true;  
+        }
+    }
     
+    /*
+        By Svetozar Draganitchki
+        checks if a player has the matching key to a room
+    */
+    public boolean hasKey(int roomNumber,Player p){
+        if(mapLayout.get(roomNumber).getKey().equals(p.getKey(mapLayout.get(roomNumber).getDoorID())))
+            {
+               return true; 
+            }
+        else
+            return false;
+    }
     
     @Override
     public void keyTyped(KeyEvent e) {
