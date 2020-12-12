@@ -273,15 +273,9 @@ public class GameLogic implements KeyListener{
     */
     public boolean canEnter(int roomNumber,Player p){
         if(mapLayout.get(roomNumber).isLocked()){
-            if(hasKey(roomNumber,p))
-                return true;
-            else
-                return false;
+            return hasKey(roomNumber, p);           //Simplified this logic - DO
         }
-        else
-        {
-          return true;  
-        }
+        return true;
     }
     
     /*
@@ -289,12 +283,7 @@ public class GameLogic implements KeyListener{
         checks if a player has the matching key to a room
     */
     public boolean hasKey(int roomNumber,Player p){
-        if(mapLayout.get(roomNumber).getKey().equals(p.getKey(mapLayout.get(roomNumber).getDoorID())))
-            {
-               return true; 
-            }
-        else
-            return false;
+        return mapLayout.get(roomNumber).getKey().equals(p.getKey(mapLayout.get(roomNumber).getDoorID()));  //Simplified this logic - DO
     }
     
     public void EnteredRoom(int roomNumber,Player p){

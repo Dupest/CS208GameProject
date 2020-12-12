@@ -213,7 +213,9 @@ public class MainGameController {
     }
 
     //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
-    
+
+
+    //What is the point of this? - Players are going to be circles, not rectangles, and you copied my other method line for line besides the color... -DO
     private void drawPlayer1(GraphicsContext gc,Rectangle rect){
         gc.setFill(Color.BLUE);
         gc.fillRect(rect.getX()-rect.getWidth()/2.0,
