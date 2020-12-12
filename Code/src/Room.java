@@ -159,4 +159,16 @@ public class Room {
     public void setPlayersInside(HashMap<Integer, Player> playersInside) {
         this.playersInside = playersInside;
     }
+
+    /*
+     * a debug method in order to populate the room with both a player
+     * and a key
+     */
+    public void debugInitialize(){
+        for(int i = 1; i < 5; i++){
+            playersInside.put(i, new Player());
+        }
+        isKey = new Key();
+
+    }
 }
