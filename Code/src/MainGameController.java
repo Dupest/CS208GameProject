@@ -124,22 +124,26 @@ public class MainGameController {
         Node node = mainGridPane.getChildren().get(0);
         mainGridPane.getChildren().clear();
         mainGridPane.getChildren().add(0, node);
-
+        GraphicsContext gc = null;
+        Canvas newMapImage = null;
         //For each node within the gridpane draw a circle representing a room.
         for(int i = 0; i < numRows; i++){
             for(int k = 0; k < numColumns; k++){
 
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
-                Canvas newMapImage = new Canvas(winWidth/numRows, winHeight/numColumns);
+                 newMapImage = new Canvas(winWidth/numRows, winHeight/numColumns);
                 canvases[i][k] = newMapImage;
 
                 //Returns a graphics object of the canvas for drawing
-                GraphicsContext gc = newMapImage.getGraphicsContext2D();
+                gc = newMapImage.getGraphicsContext2D();
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
+                
+                
 
                 mapLayout[i][k].setRoomRender(newRect);
                 drawRectangle(gc, newRect);
+                
                 //My custom circle class from the last project we did because I wanted a quick lazy drawing to show this off.
                 //CircleWithText mapCircle = new CircleWithText("Map (" + i + ", " + k + ")", new Point2D(newMapImage.getWidth()/2.0,newMapImage.getHeight()/2.0));
 
@@ -164,6 +168,9 @@ public class MainGameController {
                 mainGridPane.add(newGroup, i, k);
             }
         }
+        Rectangle player1Graphic = new Rectangle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),10, 20);
+        drawPlayer1(gc, player1Graphic);
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
 
     }
@@ -206,4 +213,14 @@ public class MainGameController {
     }
 
     //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
+    
+    private void drawPlayer1(GraphicsContext gc,Rectangle rect){
+        gc.setFill(Color.BLUE);
+        gc.fillRect(rect.getX()-rect.getWidth()/2.0,
+                rect.getY()-rect.getHeight()/2.0,
+                rect.getWidth(),
+                rect.getHeight());
+        gc.setFill(Color.GREEN);
+        gc.setStroke(Color.ORANGE);
+    }
 }

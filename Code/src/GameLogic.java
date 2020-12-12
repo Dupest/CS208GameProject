@@ -297,6 +297,12 @@ public class GameLogic implements KeyListener{
             return false;
     }
     
+    public void EnteredRoom(int roomNumber,Player p){
+        if(canEnter(roomNumber,p)){
+            
+        }
+    }
+    
     @Override
     public void keyTyped(KeyEvent e) {
 
