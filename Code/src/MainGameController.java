@@ -195,11 +195,10 @@ public class MainGameController {
         drawPlayer3(player3Graphic);
         drawPlayer4(player4Graphic);
         //adds 4 players to nodes the commented out code is how to add the players when we have them working.
-        mainGridPane.add(player1Graphic, 4, 4); //mainGridPane.add(player1Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player2Graphic, 0, 5); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player3Graphic, 1, 2); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player4Graphic, 3, 1); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-
+        mainGridPane.add(player1Graphic, 1, 5); //mainGridPane.add(player1Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player2Graphic, 5, 3); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player3Graphic, 4, 2); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player4Graphic, 7, 5); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
         mainGridPane.add(drawKey(new Rectangle()), 7, 7);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
@@ -250,26 +249,26 @@ public class MainGameController {
         
     private void drawPlayer1(Circle Circle){
         Circle.setFill(javafx.scene.paint.Color.DARKBLUE);
-        Circle.setTranslateX(70);
-        Circle.setTranslateY(20);
+        Circle.setTranslateX(0);
+        Circle.setTranslateY(0);
     }
     
     private void drawPlayer2(Circle Circle){
         Circle.setFill(javafx.scene.paint.Color.CRIMSON);
-        Circle.setTranslateX(70);
-        Circle.setTranslateY(20);
+        Circle.setTranslateX(40);
+        Circle.setTranslateY(0);
     }
     
     private void drawPlayer3(Circle Circle){
         Circle.setFill(javafx.scene.paint.Color.BLUEVIOLET);
-        Circle.setTranslateX(70);
-        Circle.setTranslateY(20);
+        Circle.setTranslateX(80);
+        Circle.setTranslateY(0);
     }
     
     private void drawPlayer4(Circle Circle){
         Circle.setFill(javafx.scene.paint.Color.CORAL);
-        Circle.setTranslateX(70);
-        Circle.setTranslateY(20);
+        Circle.setTranslateX(120);
+        Circle.setTranslateY(0);
     }
     //GUI to draw traps
     private Rectangle drawTrap(Rectangle Rect){
