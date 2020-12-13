@@ -18,7 +18,9 @@ public class GameLogic implements KeyListener{
     private HashMap<Integer, Room>  mapLayout;                                          //TODO: Change to 2D array potentially.
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
-    private static final int MAXPLAYERS = 4;
+    private int maxPlayers;
+    private int gridRows;
+    private int gridColumns;
     private static final int trapChance = 10;
 
     
@@ -27,9 +29,31 @@ public class GameLogic implements KeyListener{
         keyList = new HashMap<Integer, Key> ();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing();
+        maxPlayers = 4;
+        gridColumns = 9;
+        gridRows = 9;
     }
-    
-    public GameLogic( HashMap<Integer, Room>  mapLayout, HashMap<Integer, Key> keyList, HashMap<Integer, Player> playerList){
+
+    public GameLogic(int maxPlayers) {
+        mapLayout = new HashMap<Integer, Room> ();
+        keyList = new HashMap<Integer, Key> ();
+        playerList = new HashMap<Integer, Player> ();
+        mapInitializing();
+        this.maxPlayers = maxPlayers;
+        gridColumns = 9;
+        gridRows = 9;
+    }
+    public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
+        mapLayout = new HashMap<Integer, Room> ();
+        keyList = new HashMap<Integer, Key> ();
+        playerList = new HashMap<Integer, Player> ();
+        mapInitializing();
+        this.maxPlayers = maxPlayers;
+        this.gridColumns = gridColumns;
+        this.gridRows = gridRows;
+    }
+
+    public GameLogic(HashMap<Integer, Room>  mapLayout, HashMap<Integer, Key> keyList, HashMap<Integer, Player> playerList){
         this.mapLayout = mapLayout;
         this.keyList = keyList;
         this.playerList = playerList;
@@ -280,6 +304,9 @@ public class GameLogic implements KeyListener{
         }
         return true;
     }
+
+    public void playerMoves(Player player){
+    }
     
     /*
         By Svetozar Draganitchki
@@ -358,5 +385,57 @@ public class GameLogic implements KeyListener{
             System.out.println("Down key pressed");
             
         }
+    }
+
+    public HashMap<Integer, Room> getMapLayout() {
+        return mapLayout;
+    }
+
+    public void setMapLayout(HashMap<Integer, Room> mapLayout) {
+        this.mapLayout = mapLayout;
+    }
+
+    public HashMap<Integer, Key> getKeyList() {
+        return keyList;
+    }
+
+    public void setKeyList(HashMap<Integer, Key> keyList) {
+        this.keyList = keyList;
+    }
+
+    public HashMap<Integer, Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(HashMap<Integer, Player> playerList) {
+        this.playerList = playerList;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public static int getTrapChance() {
+        return trapChance;
+    }
+
+    public int getGridRows() {
+        return gridRows;
+    }
+
+    public void setGridRows(int gridRows) {
+        this.gridRows = gridRows;
+    }
+
+    public int getGridColumns() {
+        return gridColumns;
+    }
+
+    public void setGridColumns(int gridColumns) {
+        this.gridColumns = gridColumns;
     }
 }

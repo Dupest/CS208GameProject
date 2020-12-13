@@ -6,8 +6,6 @@ public class Player {
 
     private CircleWithText playerRender;
     private static final int DEFAULT_HEALTH = 15;
-    private HashMap<String, String> playersMap; ///I think this might be useless -Svet
-    //What is this used for -Justin L
 
     //TODO: Pick one of these two
   //  private ArrayList<Key> keyList; 
@@ -23,14 +21,12 @@ public class Player {
         healthPool = DEFAULT_HEALTH;
         keyList = null;
         currentRoom = null;
-        playersMap = new HashMap<>();
     }
 
     public Player(Room initalRoom){
         healthPool = DEFAULT_HEALTH;
         keyList = new HashMap();
         currentRoom = null;
-        playersMap = new HashMap<>();
     }
     
     //By Svetozar Draganitchki
@@ -38,7 +34,6 @@ public class Player {
         healthPool = DEFAULT_HEALTH;
         keyList = new HashMap();
         currentRoom = null;
-        playersMap = new HashMap<>();
         this.x = x;
         this.y = y;
     }
@@ -77,13 +72,18 @@ public class Player {
      
      public void setKey(int keyID,Key key){
         keyList.put(keyID,key);
-    } 
-    
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 
     //By Svetozar Draganitchki
-    public void moveRight(){
-        x++;
-    }
+    public void moveRight(){ x++; }
     
     public void moveLeft(){
         x--;
@@ -102,6 +102,34 @@ public class Player {
     }
     public int getY(){
         return y;
+    }
+
+    public CircleWithText getPlayerRender() {
+        return playerRender;
+    }
+
+    public void setPlayerRender(CircleWithText playerRender) {
+        this.playerRender = playerRender;
+    }
+
+    public static int getDefaultHealth() {
+        return DEFAULT_HEALTH;
+    }
+
+    public HashMap<Integer, Key> getKeyList() {
+        return keyList;
+    }
+
+    public void setKeyList(HashMap<Integer, Key> keyList) {
+        this.keyList = keyList;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
     }
 }
 

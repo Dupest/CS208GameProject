@@ -1,16 +1,14 @@
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
 import java.util.*;
 import javafx.scene.shape.Circle;
 
@@ -30,12 +28,12 @@ public class MainGameController {
     private GridPane mainGridPane;
 
     private Room[][]  mapLayout;
-    private HashMap<Integer, Key> keyList;
-    private HashMap<Integer, Player> playerList;
-    
-    private GameLogic GL;
+    private HashMap<Integer, Key> keyMap;
+    private HashMap<Integer, Player> playerMap;
 
-    private static final int PADDING = 10;
+    private final Color[] playerColors = {Color.VIOLET, Color.ORANGE, Color.RED, Color.BLACK};
+
+    private static final int PADDING = 2;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -43,9 +41,10 @@ public class MainGameController {
     public void initialize() {
 
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
+        gameLogic = new GameLogic(4);
         int numColumns = mainGridPane.getColumnConstraints().size();
         int numRows  = mainGridPane.getRowConstraints().size();
-
+        //setGridPaneUp();
         //Init arrays
         gridPaneNodes = new Node[numRows][numColumns];
         canvases = new Node[numRows][numColumns];
@@ -57,9 +56,9 @@ public class MainGameController {
         mainGridPane.widthProperty().addListener(evt -> doStuff());
 
         //Creates the "map" of rooms, players, and Keys
-        keyList = new HashMap<>();
-        playerList = new HashMap<>();
-        GL = new GameLogic();
+        keyMap = new HashMap<>();
+        playerMap = new HashMap<>();
+
         mapInitializing();
     }
     /*
@@ -68,8 +67,9 @@ public class MainGameController {
     and 2 players (Justin Lamberson)
      */
     public void mapInitializing(){
-        int numColumns = mainGridPane.getColumnConstraints().size();
-        int numRows  = mainGridPane.getRowConstraints().size();
+        int numColumns = gameLogic.getGridColumns();
+        int numRows  = gameLogic.getGridRows();
+        System.out.println(numColumns + " " + numRows);
         //assumes that there are 2 players and a 9 x 9 map
         Random rand = new Random();
 
@@ -100,9 +100,23 @@ public class MainGameController {
         //keyList.put(81, new Key(mapLayout[8][8] ,1));
 
         //generates the two players in the top 2 rooms
-        playerList.put(1, new Player(mapLayout[0][0]));
-        playerList.put(2, new Player(mapLayout[0][1]));
+        playerMap.put(1, new Player(mapLayout[0][0]));
+        playerMap.put(2, new Player(mapLayout[0][1]));
 
+    }
+
+    private void setGridPaneUp(){
+        for (int i = 0 ; i < gameLogic.getGridRows(); i++) {
+            RowConstraints row = new RowConstraints();
+            row.setVgrow(Priority.ALWAYS);
+            mainGridPane.getRowConstraints().add(row);
+        }
+
+        for (int j = 0 ; j < gameLogic.getGridColumns(); j++) {
+            ColumnConstraints col = new ColumnConstraints();
+            col.setHgrow(Priority.ALWAYS);
+            mainGridPane.getColumnConstraints().add(col);
+        }
     }
 
 
@@ -111,13 +125,13 @@ public class MainGameController {
      * Draw things
      */
     private void doStuff(){
-        int numColumns = mainGridPane.getColumnConstraints().size();
-        int numRows  = mainGridPane.getRowConstraints().size();
-
+        int numColumns = gameLogic.getGridColumns();
+        int numRows  = gameLogic.getGridRows();
         //First call to doStuff() will be in the initialize() method and for do to order of the loader's ops, getHeight() and getWidth() will return 0 at this point.
         // So we call the prefHeight/Width in that case.
         double winHeight = mainGridPane.getHeight();
         double winWidth = mainGridPane.getWidth();
+        System.out.println(winWidth/numRows + " " + mainGridPane.getColumnConstraints().get(1).toString());
         if(winHeight == 0 || winWidth == 0){
             winHeight = mainGridPane.getPrefHeight();
             winWidth = mainGridPane.getPrefWidth();
@@ -128,14 +142,14 @@ public class MainGameController {
         Node node = mainGridPane.getChildren().get(0);
         mainGridPane.getChildren().clear();
         mainGridPane.getChildren().add(0, node);
-        GraphicsContext gc = null;
+        GraphicsContext gc;
         Canvas newMapImage = null;
         //For each node within the gridpane draw a circle representing a room.
         for(int i = 0; i < numRows; i++){
             for(int k = 0; k < numColumns; k++){
 
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
-                 newMapImage = new Canvas(winWidth/numRows, winHeight/numColumns);
+                newMapImage = new Canvas(winWidth/numColumns, winHeight/numRows);
                 canvases[i][k] = newMapImage;
 
                 //Returns a graphics object of the canvas for drawing
@@ -176,32 +190,59 @@ public class MainGameController {
         }
         //Way to draw traps
         for(int i = 1; i < 81; i++){
-            if(GL.getRoom(i).isATrap()) {
-                Room currRoom = GL.getRoom(i);
+            if(gameLogic.getRoom(i).isATrap()) {
+                Room currRoom = gameLogic.getRoom(i);
                 mainGridPane.add(drawTrap(new Rectangle()), currRoom.getX(), currRoom.getY());
             }
         }
-        
-        //Generates 4 Players.
-        Circle player1Graphic = new Circle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
-        Circle player2Graphic = new Circle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
-        Circle player3Graphic = new Circle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
-        Circle player4Graphic = new Circle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
-        //sets colors of 4 players
-        drawPlayer1(player1Graphic);
-        drawPlayer2(player2Graphic);
-        drawPlayer3(player3Graphic);
-        drawPlayer4(player4Graphic);
-        //adds 4 players to nodes the commented out code is how to add the players when we have them working.
-        mainGridPane.add(player1Graphic, 0, 0); //mainGridPane.add(player1Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player2Graphic, 0, 0); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player3Graphic, 0, 0); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
-        mainGridPane.add(player4Graphic, 0, 0); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+
+        //To keep track of when to jump down on the y offset.
+        int[] xYOffsets = {0, 0};
+
+        //Approximate width/height of each individual rectangle
+        double individualGridPaneWidth = (winWidth/numColumns);
+        double individualGridPaneHeight = (winHeight/numRows);
+
+        //Take the lesser of the two values ( should usually be the height, but..) and sets the radius to half that value (accounting for padding)
+        double radius = Math.min(individualGridPaneHeight/gameLogic.getMaxPlayers(), individualGridPaneWidth/gameLogic.getMaxPlayers())-(PADDING/2.0);
+
+        //TODO: Check if FlowPane offers an easier implementation.
+        GridPane startingPlayers = new GridPane();
+
+        startingPlayers.setAlignment(Pos.CENTER);
+        startingPlayers.setHgap(individualGridPaneHeight/gameLogic.getMaxPlayers());
+        startingPlayers.setVgap(PADDING);
+        for(int i = 0; i < gameLogic.getMaxPlayers(); i++) {
+            startingPlayers.add(new Circle(radius, playerColors[i%4]), xYOffsets[0], xYOffsets[1]);
+            xYOffsets[0]++;
+            if( i == gameLogic.getMaxPlayers()/2-1){
+               xYOffsets[0] = 0;
+               xYOffsets[1]++;
+            }
+        }
+//        //Generates 4 Players.
+//        Circle player1Graphic = new Circle
+//                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+//        Circle player2Graphic = new Circle
+//                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+//        Circle player3Graphic = new Circle
+//                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+//        Circle player4Graphic = new Circle
+//                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+//        //sets colors of 4 players
+//        drawPlayer1(player1Graphic);
+//        drawPlayer2(player2Graphic);
+//        drawPlayer3(player3Graphic);
+//        drawPlayer4(player4Graphic);
+//        //adds 4 players to nodes the commented out code is how to add the players when we have them working.
+//        mainGridPane.add(player1Graphic, 0, 0); //mainGridPane.add(player1Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+//        mainGridPane.add(player2Graphic, 0, 0); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+//        mainGridPane.add(player3Graphic, 0, 0); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+//        mainGridPane.add(player4Graphic, 0, 0); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(startingPlayers, 0,0);
+        movePlayer(null);
         mainGridPane.add(drawKey(new Rectangle()), 7, 7);
+        movePlayer(null);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
 
@@ -298,4 +339,46 @@ public class MainGameController {
         mainGridPane.getChildren().remove(player);
     }
 
+
+    //Does nothing right now, was figuring out the syntax for removing within a group env.
+    private void movePlayer(Player player){
+        if(mainGridPane.getChildren().get(mainGridPane.getChildren().size()-1).getClass() == GridPane.class)
+            ((GridPane)(mainGridPane.getChildren().get(mainGridPane.getChildren().size()-1))).getChildren().remove(3);
+    }
+
+
+    //Plan to move this method entirely out of doStuff, but I didn't want to break anything working right now
+    private void updateRoom(Room room){
+        double winHeight = mainGridPane.getHeight();
+        double winWidth = mainGridPane.getWidth();
+        //To keep track of when to jump down on the y offset.
+        int[] xYOffsets = {0, 0};
+
+        //Approximate width/height of each individual rectangle
+        double individualGridPaneWidth = (winWidth/gameLogic.getGridColumns());
+        double individualGridPaneHeight = (winHeight/gameLogic.getGridRows());
+
+        //Take the lesser of the two values ( should usually be the height, but..) and sets the radius to half that value (accounting for padding)
+        double radius = Math.min(individualGridPaneHeight/gameLogic.getMaxPlayers(), individualGridPaneWidth/gameLogic.getMaxPlayers())-(PADDING/2.0);
+
+        //TODO: Check if FlowPane offers an easier implementation.
+        GridPane startingPlayers = new GridPane();
+
+        startingPlayers.setAlignment(Pos.CENTER);
+        startingPlayers.setHgap(individualGridPaneHeight/gameLogic.getMaxPlayers());
+        startingPlayers.setVgap(PADDING);
+        for(int i = 0; i < gameLogic.getMaxPlayers(); i++) {
+            startingPlayers.add(new Circle(radius, playerColors[i%4]), xYOffsets[0], xYOffsets[1]);
+            xYOffsets[0]++;
+            if( i == gameLogic.getMaxPlayers()/2-1){
+                xYOffsets[0] = 0;
+                xYOffsets[1]++;
+            }
+        }
+        //Pretty sure this will always be the last child, but just in case I'm full of crap, we'll check
+        if(mainGridPane.getChildren().get(mainGridPane.getChildren().size()-1).getClass() == GridPane.class){
+            mainGridPane.getChildren().remove(mainGridPane.getChildren().size()-1);
+        }
+        mainGridPane.add(startingPlayers, room.getY(),room.getX());
+    }
 }
