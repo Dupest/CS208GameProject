@@ -92,6 +92,13 @@ public class Player {
     public void moveBackward(){
         y--;
     }
+    
+    public int getX(){
+        return x;
+    }
+    public int getY(){
+        return y;
+    }
 }
 
 

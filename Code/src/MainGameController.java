@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
 import java.util.*;
+import javafx.scene.shape.Circle;
 
 //Edited By Svetozar Draganitchki
 public class MainGameController {
@@ -31,6 +32,8 @@ public class MainGameController {
     private Room[][]  mapLayout;
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
+    
+    private GameLogic GL;
 
     private static final int PADDING = 10;
 
@@ -56,6 +59,7 @@ public class MainGameController {
         //Creates the "map" of rooms, players, and Keys
         keyList = new HashMap<>();
         playerList = new HashMap<>();
+        GL = new GameLogic();
         mapInitializing();
     }
     /*
@@ -126,6 +130,7 @@ public class MainGameController {
         mainGridPane.getChildren().add(0, node);
         GraphicsContext gc = null;
         Canvas newMapImage = null;
+        Group newGroup = null;
         //For each node within the gridpane draw a circle representing a room.
         for(int i = 0; i < numRows; i++){
             for(int k = 0; k < numColumns; k++){
@@ -163,14 +168,30 @@ public class MainGameController {
 //                else
 //                    mapCircle.draw(gc);
                 //System.out.println("Circle coords: " + mapCircle.getPoint());
-                Group newGroup = new Group();
+                newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
             }
         }
-        Rectangle player1Graphic = new Rectangle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),10, 20);
-        drawPlayer1(gc, player1Graphic);
+        //Generates 4 Players.
+        Circle player1Graphic = new Circle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+        Circle player2Graphic = new Circle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+        Circle player3Graphic = new Circle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+        Circle player4Graphic = new Circle
+                        (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
+        //sets colors of 4 players
+        drawPlayer1(player1Graphic);
+        drawPlayer2(player2Graphic);
+        drawPlayer3(player3Graphic);
+        drawPlayer4(player4Graphic);
+        //adds 4 players to nodes the commented out code is how to add the players when we have them working.
+        mainGridPane.add(player1Graphic, 4, 4); //mainGridPane.add(player1Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player2Graphic, 0, 5); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player3Graphic, 1, 2); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+        mainGridPane.add(player4Graphic, 3, 1); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
 
     }
@@ -215,14 +236,29 @@ public class MainGameController {
     //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
 
 
-    //What is the point of this? - Players are going to be circles, not rectangles, and you copied my other method line for line besides the color... -DO
-    private void drawPlayer1(GraphicsContext gc,Rectangle rect){
-        gc.setFill(Color.BLUE);
-        gc.fillRect(rect.getX()-rect.getWidth()/2.0,
-                rect.getY()-rect.getHeight()/2.0,
-                rect.getWidth(),
-                rect.getHeight());
-        gc.setFill(Color.GREEN);
-        gc.setStroke(Color.ORANGE);
+    //Sets the Colors and Sizes of different players
+        
+    private void drawPlayer1(Circle Circle){
+        Circle.setFill(javafx.scene.paint.Color.DARKBLUE);
+        Circle.setTranslateX(70);
+        Circle.setTranslateY(20);
+    }
+    
+    private void drawPlayer2(Circle Circle){
+        Circle.setFill(javafx.scene.paint.Color.CRIMSON);
+        Circle.setTranslateX(70);
+        Circle.setTranslateY(20);
+    }
+    
+    private void drawPlayer3(Circle Circle){
+        Circle.setFill(javafx.scene.paint.Color.BLUEVIOLET);
+        Circle.setTranslateX(70);
+        Circle.setTranslateY(20);
+    }
+    
+    private void drawPlayer4(Circle Circle){
+        Circle.setFill(javafx.scene.paint.Color.CORAL);
+        Circle.setTranslateX(70);
+        Circle.setTranslateY(20);
     }
 }

@@ -292,6 +292,10 @@ public class GameLogic implements KeyListener{
         }
     }
     
+    public Player getPlayer(int playerID){
+        return playerList.get(playerID);
+    }
+    
     @Override
     public void keyTyped(KeyEvent e) {
 
