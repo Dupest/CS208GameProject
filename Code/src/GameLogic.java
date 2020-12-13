@@ -41,7 +41,7 @@ public class GameLogic implements KeyListener{
     /*
     initializes the map depending on the size of the map and
     number of players. By default, it generates a 9 x 9 map
-    and 2 players
+    and 4 players
      */
     public void mapInitializing(){
         //assumes that there are 2 players and a 9 x 9 map
@@ -97,8 +97,10 @@ public class GameLogic implements KeyListener{
         
 
         //generates the two players in the top 2 rooms
-        playerList.put(1, new Player(mapLayout.get(rand.nextInt(10)))); // playerList.put(1, new Player(0,8));
-        playerList.put(2, new Player(mapLayout.get(rand.nextInt(10)))); // playerList.put(1, new Player(0,7));
+        playerList.put(1, new Player(0, 0)); // playerList.put(1, new Player(0,8));
+        playerList.put(2, new Player(0, 0)); // playerList.put(1, new Player(0,7));
+        playerList.put(3, new Player(0, 0));
+        playerList.put(4, new Player(0, 0));
 
     }
     

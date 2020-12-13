@@ -204,6 +204,7 @@ public class MainGameController {
         mainGridPane.add(drawKey(new Rectangle()), 7, 7);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
+
     }
 
     private void populateArray(){

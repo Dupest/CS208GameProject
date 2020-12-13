@@ -28,7 +28,7 @@ public class Player {
 
     public Player(Room initalRoom){
         healthPool = DEFAULT_HEALTH;
-        keyList = null;
+        keyList = new HashMap();
         currentRoom = null;
         playersMap = new HashMap<>();
     }
@@ -36,7 +36,7 @@ public class Player {
     //By Svetozar Draganitchki
     public Player(int x,int y){
         healthPool = DEFAULT_HEALTH;
-        keyList = null;
+        keyList = new HashMap();
         currentRoom = null;
         playersMap = new HashMap<>();
         this.x = x;
