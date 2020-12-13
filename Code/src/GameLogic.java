@@ -19,6 +19,7 @@ public class GameLogic implements KeyListener{
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
     private static final int MAXPLAYERS = 4;
+    private static final int trapChance = 10;
 
     
     public GameLogic(){
@@ -68,7 +69,7 @@ public class GameLogic implements KeyListener{
         {
             for(int x = 0 ; x < 9; x ++)
             {
-                if(rand.nextInt(10) <= 5 || traps >= 0){
+                if(rand.nextInt(100) <= trapChance && traps >= 0){
                     mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber ++;
@@ -173,7 +174,7 @@ public class GameLogic implements KeyListener{
         {
             for(int x = 0 ; x < 9; x ++)
             {
-                if(rand.nextInt(10) <= 5 || traps >= 0){
+                if(rand.nextInt(100) <= trapChance && traps >= 0){
                     mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber ++;
@@ -236,7 +237,7 @@ public class GameLogic implements KeyListener{
         {
             for(int x = 0 ; x < 9; x ++)
             {
-                if(rand.nextInt(10) <= 5 || traps >= 0){
+                if(rand.nextInt(100) <= trapChance && traps >= 0){
                     mapLayout.put(roomNumber, new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber ++;

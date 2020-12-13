@@ -175,10 +175,12 @@ public class MainGameController {
             }
         }
         //Way to draw traps
-//        for(int i = 0; i <81; i++){
-//            if(GL.getRoom(i).hasKey())
-                mainGridPane.add(drawTrap(new Rectangle()),3,4); //mainGridPane.add(drawTrap(new Rectangle()),GL.getRoom(i).getX(), GL.getRoom(i).getY());
-//        }
+        for(int i = 1; i < 81; i++){
+            if(GL.getRoom(i).isATrap()) {
+                Room currRoom = GL.getRoom(i);
+                mainGridPane.add(drawTrap(new Rectangle()), currRoom.getX(), currRoom.getY());
+            }
+        }
         
         //Generates 4 Players.
         Circle player1Graphic = new Circle
@@ -202,7 +204,6 @@ public class MainGameController {
         mainGridPane.add(drawKey(new Rectangle()), 7, 7);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
-
     }
 
     private void populateArray(){
@@ -286,4 +287,14 @@ public class MainGameController {
         Rect.setTranslateX(130);
         return Rect;
     }
+
+
+    /*
+     * method to be called in order to draw the players
+     * elsewhere in the map
+     */
+    private void erasePlayer(Circle player){
+        mainGridPane.getChildren().remove(player);
+    }
+
 }
