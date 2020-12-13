@@ -130,7 +130,6 @@ public class MainGameController {
         mainGridPane.getChildren().add(0, node);
         GraphicsContext gc = null;
         Canvas newMapImage = null;
-        Group newGroup = null;
         //For each node within the gridpane draw a circle representing a room.
         for(int i = 0; i < numRows; i++){
             for(int k = 0; k < numColumns; k++){
@@ -144,7 +143,8 @@ public class MainGameController {
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
                 
-                
+                System.out.println("W:" + newMapImage.getWidth());
+                System.out.println("H:" + newMapImage.getHeight());
 
                 mapLayout[i][k].setRoomRender(newRect);
                 drawRectangle(gc, newRect);
@@ -168,11 +168,15 @@ public class MainGameController {
 //                else
 //                    mapCircle.draw(gc);
                 //System.out.println("Circle coords: " + mapCircle.getPoint());
-                newGroup = new Group();
+                Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
             }
         }
+        //Way to draw traps
+        mainGridPane.add(drawTrap(new Rectangle()), 3, 1);
+        
+        
         //Generates 4 Players.
         Circle player1Graphic = new Circle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight(),15);
@@ -192,6 +196,9 @@ public class MainGameController {
         mainGridPane.add(player2Graphic, 0, 5); //mainGridPane.add(player2Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
         mainGridPane.add(player3Graphic, 1, 2); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
         mainGridPane.add(player4Graphic, 3, 1); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
+
+        
+        
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
 
     }
@@ -260,5 +267,13 @@ public class MainGameController {
         Circle.setFill(javafx.scene.paint.Color.CORAL);
         Circle.setTranslateX(70);
         Circle.setTranslateY(20);
+    }
+    //GUI to draw traps
+    private Rectangle drawTrap(Rectangle Rect){
+        Rect.setWidth(50);
+        Rect.setHeight(50);
+        Rect.setFill(Color.GREENYELLOW);
+        Rect.setTranslateX(58);
+        return Rect;
     }
 }
