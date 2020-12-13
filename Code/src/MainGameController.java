@@ -171,11 +171,14 @@ public class MainGameController {
                 Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
+                
             }
         }
         //Way to draw traps
-        mainGridPane.add(drawTrap(new Rectangle()), 3, 1);
-        
+//        for(int i = 0; i <81; i++){
+//            if(GL.getRoom(i).hasKey())
+                mainGridPane.add(drawTrap(new Rectangle()),3,4); //mainGridPane.add(drawTrap(new Rectangle()),GL.getRoom(i).getX(), GL.getRoom(i).getY());
+//        }
         
         //Generates 4 Players.
         Circle player1Graphic = new Circle
@@ -197,7 +200,7 @@ public class MainGameController {
         mainGridPane.add(player3Graphic, 1, 2); //mainGridPane.add(player3Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
         mainGridPane.add(player4Graphic, 3, 1); //mainGridPane.add(player4Graphic, GL.getPlayer(2).getX(), GL.getPlayer(1).getY());
 
-        
+        mainGridPane.add(drawKey(new Rectangle()), 7, 7);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
 
@@ -274,6 +277,14 @@ public class MainGameController {
         Rect.setHeight(50);
         Rect.setFill(Color.GREENYELLOW);
         Rect.setTranslateX(58);
+        return Rect;
+    }
+    //GUI to draw keyse
+    private Rectangle drawKey(Rectangle Rect){
+        Rect.setWidth(25);
+        Rect.setHeight(12);
+        Rect.setFill(Color.GOLD);
+        Rect.setTranslateX(130);
         return Rect;
     }
 }

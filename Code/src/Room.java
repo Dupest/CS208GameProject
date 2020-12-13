@@ -96,6 +96,13 @@ public class Room {
     public int getY(){
         return y;
     }
+    
+    public boolean hasKey(){
+        if(isKey == null)
+            return false;
+        else 
+            return true;
+    }
 
     /*TODO: Reconsider these two. We probably don't need to check for the booleans because they'll change. We can, but room.doorID should be unique from it's implementation anyway  */
     @Override

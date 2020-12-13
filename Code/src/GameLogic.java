@@ -296,6 +296,14 @@ public class GameLogic implements KeyListener{
         return playerList.get(playerID);
     }
     
+    public Key getKeyMap(int keyID){
+        return keyList.get(keyID);
+    }
+    
+    public Room getRoom(int roomNumber){
+        return mapLayout.get(roomNumber);
+    }
+    
     @Override
     public void keyTyped(KeyEvent e) {
 
