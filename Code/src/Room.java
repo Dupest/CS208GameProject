@@ -131,10 +131,10 @@ public class Room {
         int damageTaken = rand.nextInt(5);
         if(isATrap){
             if(damageTaken == 0){ //check prevents the damage taken not to be less than 1
-                player.trapTriggered();
+                player.setHealthPool((player.getHealthPool() - 1));
                 isATrap = false;
             } else {
-                player.trapTriggered(damageTaken);
+                player.setHealthPool((player.getHealthPool() - damageTaken));
                 isATrap = false;
             }
         }
@@ -152,7 +152,7 @@ public class Room {
         return player;
     }
 
-    //TODO move triggered trap to room
+    // move triggered trap to room - resolved in player entry
 
 
     public void setLocked(boolean locked) {

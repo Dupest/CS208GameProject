@@ -1,0 +1,24 @@
+<changelist name="Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]" date="1607834406794" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 12/12/2020 11:40 PM [Default Changelist]" />
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Code/Player.class" />
+    <option name="AFTER_PATH" value="out/production/Code/Player.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]/Player.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Code/MainGameController.class" />
+    <option name="AFTER_PATH" value="out/production/Code/MainGameController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]/MainGameController.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Code/GameLogic.class" />
+    <option name="AFTER_PATH" value="out/production/Code/GameLogic.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]/GameLogic.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Code/Room.class" />
+    <option name="AFTER_PATH" value="out/production/Code/Room.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_12_2020_11_40_PM_[Default_Changelist]/Room.class" />
+  </binary>
+</changelist>

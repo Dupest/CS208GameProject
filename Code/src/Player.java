@@ -51,20 +51,24 @@ public class Player {
     /*
      *if a trap is triggered, by default, damage taken is one
      */
-    public void trapTriggered(){
+    /*public void trapTriggered(){
         healthPool--;
-    }
+    }*/
 
     /*
      * Overloaded method does the same thing as the default method
      * but, it allows the damage taken to be set
      */
-    public void trapTriggered(int damage){
+    /*public void trapTriggered(int damage){
         healthPool -= damage;
-    }
+    }*/
 
     public int getHealthPool(){
         return healthPool;
+    }
+
+    public void setHealthPool(int newHealth){
+        healthPool = newHealth;
     }
     
     public Key getKey(int keyID){
