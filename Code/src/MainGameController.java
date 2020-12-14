@@ -157,8 +157,8 @@ public class MainGameController {
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
                 
-                System.out.println("W:" + newMapImage.getWidth());
-                System.out.println("H:" + newMapImage.getHeight());
+//                System.out.println("W:" + newMapImage.getWidth());
+//                System.out.println("H:" + newMapImage.getHeight());
 
                 mapLayout[i][k].setRoomRender(newRect);
                 drawRectangle(gc, newRect);
@@ -319,10 +319,10 @@ public class MainGameController {
         Rect.setHeight(50);
         Rect.setFill(Color.GREENYELLOW);
         Rect.setTranslateX(58);
-        return Rect;
-    }
     //GUI to draw keyse
     private Rectangle drawKey(Rectangle Rect){
+        return Rect;
+    }
         Rect.setWidth(25);
         Rect.setHeight(12);
         Rect.setFill(Color.GOLD);
