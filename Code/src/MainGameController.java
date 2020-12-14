@@ -319,10 +319,10 @@ public class MainGameController {
         Rect.setHeight(50);
         Rect.setFill(Color.GREENYELLOW);
         Rect.setTranslateX(58);
-    //GUI to draw keyse
-    private Rectangle drawKey(Rectangle Rect){
         return Rect;
     }
+    //GUI to draw keyse
+    private Rectangle drawKey(Rectangle Rect){
         Rect.setWidth(25);
         Rect.setHeight(12);
         Rect.setFill(Color.GOLD);
