@@ -4,7 +4,7 @@ import java.util.HashMap;
 //Edited By Svetozar Draganitchki
 public class Player {
 
-    private CircleWithText playerRender;
+    private Circle playerRender;
     private static final int DEFAULT_HEALTH = 15;
 
     //TODO: Pick one of these two
@@ -43,6 +43,8 @@ public class Player {
             currentRoom = null;
         }
     }
+
+    //old methods that were moved into the room class
     /*
      *if a trap is triggered, by default, damage taken is one
      */
@@ -104,11 +106,11 @@ public class Player {
         return y;
     }
 
-    public CircleWithText getPlayerRender() {
+    public Circle getPlayerRender() {
         return playerRender;
     }
 
-    public void setPlayerRender(CircleWithText playerRender) {
+    public void setPlayerRender(Circle playerRender) {
         this.playerRender = playerRender;
     }
 

@@ -9,7 +9,7 @@ public class Room {
     private boolean isATrap;
     private Rectangle roomRender;
 
-    HashMap<Integer, Player> playersInside = new HashMap<>(); //TODO check hashmap implementation
+    HashMap<Integer, Player> playersInside = new HashMap<>();
     
     private Key isKey;
     private int x,y;
@@ -144,7 +144,6 @@ public class Room {
     /*
      * method for removing a player from a room and returning that player
      * -Justin Lamberson
-     * TODO should table be rehashed in this method? -JL
      */
     public Player playerExiting(int playerID){
         Player player = playersInside.get(playerID);
