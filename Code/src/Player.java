@@ -133,6 +133,32 @@ public class Player {
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
+    
+    @Override
+    /*
+       By Svetozar Draganitcki
+       ToString method to return the health of the player and the key
+    */
+    public String toString() {
+        return "Player Health:" + healthPool + "Key List" + keyList;
+    }
+    
+     @Override
+    public boolean equals(Object obj){
+        if (obj == this) return true;
+
+        if (obj == null) return false;
+
+        if (this.getClass() == obj.getClass()){
+            Player a = (Player) obj;
+
+            return currentRoom == a.currentRoom
+                    && this.healthPool== a.healthPool
+                    && this.keyList== a.keyList;
+        }
+        else
+            return false;
+    }
 }
 
 
