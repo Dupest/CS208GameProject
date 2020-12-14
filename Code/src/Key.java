@@ -1,12 +1,19 @@
 //Edited by Svetozar Draganitchki
 public class Key {
+
+    //reference to the room the key unlocks
     private Room roomUnlock;
+
+    //used if the game master wishes the key to do more damage to other players when aquired
     private int damageMagnitude;
     //auto-scaling damage maybe
+    //damage magnitude of the key
     private static int magnitudeModifier = 1;
     
     //location variables
     private int x,y;
+
+    //constuctors for the class
     public Key(){
         this.roomUnlock = null;
         this.damageMagnitude = magnitudeModifier*100;   //Random magic number, mostly placeholder idea
@@ -24,6 +31,8 @@ public class Key {
         this.y = y;
     }
 
+
+    //Getter and setter methods
     public Room getMyRoom() {
         return roomUnlock;
     }

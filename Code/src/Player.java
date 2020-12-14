@@ -6,19 +6,32 @@ import java.util.HashMap;
 //Edited By Svetozar Draganitchki
 public class Player {
 
+    //used to draw the player on the map
     private Circle playerRender;
+
+    //default health of the player if the constructor without the health parameter is used
     private static final int DEFAULT_HEALTH = 15;
 
     //TODO: Pick one of these two
-  //  private ArrayList<Key> keyList; 
+  //  private ArrayList<Key> keyList;
+
+    //The list of keys a player would have on them after collection
     private HashMap<Integer, Key> keyList;
     //private int numKeys;
+
+    /*reference to the current room a player is in
+     * if set to null, the player is out of the game
+     * or is not playing the game
+     */
     private Room currentRoom;
+
+    //the current health of the player
     private int healthPool;
     
     //variables to keep track of player location
     private int x,y;
-    
+
+    //main constructors
     public Player(){
         healthPool = DEFAULT_HEALTH;
         keyList = null;
@@ -62,6 +75,8 @@ public class Player {
         healthPool -= damage;
     }*/
 
+
+    //getters and setters of the class
     public int getHealthPool(){
         return healthPool;
     }
