@@ -15,7 +15,7 @@ import java.util.Random;
  */
 public class GameLogic implements KeyListener{
     //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
-    private HashMap<Integer, Room>  mapLayout;                                          //TODO: Change to 2D array potentially.
+    private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
     private HashMap<Integer, Key> keyList;
     private HashMap<Integer, Player> playerList;
     private int maxPlayers;
@@ -25,7 +25,7 @@ public class GameLogic implements KeyListener{
 
     
     public GameLogic(){
-        mapLayout = new HashMap<Integer, Room> ();
+        mapLayout = new Room[9][9];
         keyList = new HashMap<Integer, Key> ();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing();
@@ -35,25 +35,26 @@ public class GameLogic implements KeyListener{
     }
 
     public GameLogic(int maxPlayers) {
-        mapLayout = new HashMap<Integer, Room> ();
+
         keyList = new HashMap<Integer, Key> ();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing();
         this.maxPlayers = maxPlayers;
         gridColumns = 9;
         gridRows = 9;
+        mapLayout = new Room[9][9];
     }
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
-        mapLayout = new HashMap<Integer, Room> ();
         keyList = new HashMap<Integer, Key> ();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing();
         this.maxPlayers = maxPlayers;
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
+        mapLayout = new Room[gridRows][gridColumns];
     }
 
-    public GameLogic(HashMap<Integer, Room>  mapLayout, HashMap<Integer, Key> keyList, HashMap<Integer, Player> playerList){
+    public GameLogic(Room[][] mapLayout, HashMap<Integer, Key> keyList, HashMap<Integer, Player> playerList){
         this.mapLayout = mapLayout;
         this.keyList = keyList;
         this.playerList = playerList;
@@ -387,11 +388,11 @@ public class GameLogic implements KeyListener{
         }
     }
 
-    public HashMap<Integer, Room> getMapLayout() {
+    public Room[][] getMapLayout() {
         return mapLayout;
     }
 
-    public void setMapLayout(HashMap<Integer, Room> mapLayout) {
+    public void setMapLayout(Room[][] mapLayout) {
         this.mapLayout = mapLayout;
     }
 
