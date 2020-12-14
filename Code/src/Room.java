@@ -4,22 +4,35 @@ import java.util.*;
 
 // Edited By Svetozar Draganitchki
 public class Room {
+
+    //field to determine if a room is locked and a player requires a key to enter
     private boolean isLocked;
+
+    //the ID of the door
     private int doorID;
+
+    //field to determine if a room is trapped and a player will take damage
     private boolean isATrap;
+
+    //Object to render the room in the UI
     private Rectangle roomRender;
 
+    //a hashmap to contain all of the players inside a room
     HashMap<Integer, Player> playersInside = new HashMap<>();
-    
-    private Key isKey;
+
+    //reference to the key that unlocks the room
+    private Key roomKey;
+
+    //coordinates of the room in the map starting at (0,0)
     private int x,y;
 
 
+    //main constructors to the room
     public Room(){
         this.isLocked = false;
         this.doorID = -1;
         this.isATrap = false;
-        this.isKey = null;
+        this.roomKey = null;
         this.roomRender = null;
     }
     public Room(boolean isLocked, int doorID, boolean isATrap) {
@@ -43,7 +56,7 @@ public class Room {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
-        this.isKey = isKey;
+        this.roomKey = isKey;
         this.roomRender = null;
     }
     //By Svetozar Draganitchki
@@ -51,12 +64,14 @@ public class Room {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
-        this.isKey = isKey;
+        this.roomKey = isKey;
         this.x = x;
         this.y = y;
         this.roomRender = null;
     }
 
+
+    //Getter and setter methods for fields
     public boolean isLocked() {
         return isLocked;
     }
@@ -82,11 +97,11 @@ public class Room {
     }
     
     public void setKey(Key a){
-        isKey = a;
+        roomKey = a;
     }
     
     public Key getKey(){
-        return isKey;
+        return roomKey;
     }
     
     public int getX(){
@@ -96,13 +111,35 @@ public class Room {
     public int getY(){
         return y;
     }
-    
-    public boolean hasKey(){
-        if(isKey == null)
-            return false;
-        else 
-            return true;
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
+
+    public Rectangle getRoomRender() {
+        return roomRender;
+    }
+
+    public void setRoomRender(Rectangle roomRender) {
+        this.roomRender = roomRender;
+    }
+
+    public HashMap<Integer, Player> getPlayersInside() {
+        return playersInside;
+    }
+
+    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
+        this.playersInside = playersInside;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
 
     /*TODO: Reconsider these two. We probably don't need to check for the booleans because they'll change. We can, but room.doorID should be unique from it's implementation anyway  */
     @Override
@@ -151,28 +188,6 @@ public class Room {
         return player;
     }
 
-    // move triggered trap to room - resolved in player entry
-
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
-
-    public Rectangle getRoomRender() {
-        return roomRender;
-    }
-
-    public void setRoomRender(Rectangle roomRender) {
-        this.roomRender = roomRender;
-    }
-
-    public HashMap<Integer, Player> getPlayersInside() {
-        return playersInside;
-    }
-
-    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
-        this.playersInside = playersInside;
-    }
 
     /*
      * a debug method in order to populate the room with both a player
@@ -182,15 +197,9 @@ public class Room {
         for(int i = 1; i < 5; i++){
             playersInside.put(i, new Player());
         }
-        isKey = new Key();
+        roomKey = new Key();
 
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
 
-    public void setY(int y) {
-        this.y = y;
-    }
 }
