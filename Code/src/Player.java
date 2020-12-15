@@ -19,7 +19,7 @@ public class Player {
     private Key key;
     //private int numKeys;
 
-    /*reference to the current room a player is in
+    /**reference to the current room a player is in
      * if set to null, the player is out of the game
      * or is not playing the game
      */
@@ -46,7 +46,7 @@ public class Player {
         currentRoom = room;
     }
 
-    
+
     //By Svetozar Draganitchki
     public Player(int x,int y){
         healthPool = DEFAULT_HEALTH;

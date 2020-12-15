@@ -85,19 +85,22 @@ public class MainGameController<Vbox> {
 
     private ObjectProperty<Font> fontScaling;
     ArrayList<DoubleProperty> healthBarUpdaters;
+    private int numColumns;
+    private int numRows;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
      */
     public void initialize() {
+        numColumns = 9;
+        numRows = 9;
+        keyDrawn = false;
         keyImage = new ImageView();
         fontScaling = new SimpleObjectProperty<Font>(Font.getDefault());
         healthBarUpdaters = new ArrayList<>();
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
         gameLogic = new GameLogic(4);
         setGridPaneUp();
-        int numColumns = mainGridPane.getColumnConstraints().size();
-        int numRows  = mainGridPane.getRowConstraints().size();
         //setGridPaneUp();
         //Init arrays
         gridPaneNodes = new GridPane[numRows][numColumns];
@@ -114,6 +117,7 @@ public class MainGameController<Vbox> {
         mainGridPane.heightProperty().addListener(evt -> doStuff());
         mainGridPane.widthProperty().addListener(evt -> doStuff());
         labelsPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> fontScaling.set(Font.font(newWidth.doubleValue() / 4)));
+
     }
 
     private void setUpPlayerGraphics(){
@@ -138,9 +142,8 @@ public class MainGameController<Vbox> {
             playerLabel.fontProperty().bind(fontScaling);
             labelsPane.getChildren().add(playerLabel);
             labelsPane.getChildren().add(playerHealthBar);
-
-
         }
+        //placeKeyOnMap();
 
     }
     private void setGridPaneUp(){
@@ -164,20 +167,18 @@ public class MainGameController<Vbox> {
     /**
      * Draw things
      */
-    private void doStuff(){
-        int numColumns = gameLogic.getGridColumns();
-        int numRows  = gameLogic.getGridRows();
+    private void doStuff() {
         //First call to doStuff() will be in the initialize() method and for do to order of the loader's ops, getHeight() and getWidth() will return 0 at this point.
         // So we call the prefHeight/Width in that case.
         double winHeight = mainGridPane.getHeight();
         double winWidth = mainGridPane.getWidth();
         //System.out.println(winWidth/numRows + " " + mainGridPane.getColumnConstraints().get(1).toString());
-        if(winHeight == 0 || winWidth == 0){
+        if (winHeight == 0 || winWidth == 0) {
             winHeight = mainGridPane.getPrefHeight();
             winWidth = mainGridPane.getPrefWidth();
         }
-        individualGridPaneWidth = (winWidth/numColumns);
-        individualGridPaneHeight = (winHeight/numRows);
+        individualGridPaneWidth = (winWidth / numColumns);
+        individualGridPaneHeight = (winHeight / numRows);
         //Another hacky solution that I've found. getChildren().clear() removes the gridlines on our gridpane. However, this information is stored within the very first
         //child so we simply store that through the deletion, and fit it back in to regain our lines.
         Node node = mainGridPane.getChildren().get(0);
@@ -186,17 +187,17 @@ public class MainGameController<Vbox> {
         GraphicsContext gc;
         Canvas newMapImage = null;
         //For each node within the gridpane draw a square representing a room.
-        for(int i = 0; i < numRows; i++){
-            for(int k = 0; k < numColumns; k++){
+        for (int i = 0; i < numRows; i++) {
+            for (int k = 0; k < numColumns; k++) {
                 Room currRoom = gameLogic.getRoom(i, k);
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
-                newMapImage = new Canvas(winWidth/numColumns, winHeight/numRows);
+                newMapImage = new Canvas(winWidth / numColumns, winHeight / numRows);
                 canvases[i][k] = newMapImage;
 
                 //Returns a graphics object of the canvas for drawing
                 gc = newMapImage.getGraphicsContext2D();
                 Rectangle newRect = new Rectangle
-                        (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
+                        (newMapImage.getWidth() / 2.0, newMapImage.getHeight() / 2.0, newMapImage.getWidth() - PADDING, newMapImage.getHeight() - PADDING);
                 gameLogic.getRoomList().get(new Point2D(i, k)).setRoomRender(newRect);
                 drawRectangle(gc, newRect, currRoom.isATrap());
                 Group newGroup = new Group();
@@ -204,40 +205,45 @@ public class MainGameController<Vbox> {
                 mainGridPane.add(newGroup, i, k);
 
                 int[] xYOffsets = {0, 0};
-                double radius = Math.min(individualGridPaneHeight/gameLogic.getMaxPlayers(), individualGridPaneWidth/gameLogic.getMaxPlayers())-(PADDING/2.0);
+                double radius = Math.min(individualGridPaneHeight / gameLogic.getMaxPlayers(), individualGridPaneWidth / gameLogic.getMaxPlayers()) - (PADDING / 2.0);
                 GridPane playersInRoom = new GridPane();
                 playersInRoom.setAlignment(Pos.CENTER);
-                playersInRoom.setHgap(individualGridPaneHeight/gameLogic.getMaxPlayers());
+                playersInRoom.setHgap(individualGridPaneHeight / gameLogic.getMaxPlayers());
                 playersInRoom.setVgap(PADDING);
-                for(int j = 0; j < currRoom.playersInside.size(); j++) {
+                for (int j = 0; j < currRoom.playersInside.size(); j++) {
                     Circle playerCircle = currRoom.playersInside.get(j).getPlayerRender();
-                    playersInRoom.add(playerCircle,xYOffsets[0],xYOffsets[1]);
+                    playersInRoom.add(playerCircle, xYOffsets[0], xYOffsets[1]);
                     xYOffsets[0]++;
-                    if( j == gameLogic.getMaxPlayers()/2-1){
+                    if (j == gameLogic.getMaxPlayers() / 2 - 1) {
                         xYOffsets[0] = 0;
                         xYOffsets[1]++;
                     }
                 }
                 gridPaneNodes[i][k] = playersInRoom;
                 mainGridPane.add(playersInRoom, i, k);
-                
             }
         }
-        if(!gameLogic.getKey().playerCarrying()) {
+        placeKeyOnMap();
+    }
+
+        //mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
+        //movePlayer(null);
+        
+        //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
+    private void placeKeyOnMap() {
+        if (!gameLogic.getKey().playerCarrying()) {
             Image keyPic = new Image("smallKey.png");
             keyDrawn = true;
             keyImage.fitWidthProperty().bind(mainGridPane.widthProperty().divide(numColumns * gameLogic.getMaxPlayers()));
             keyImage.fitHeightProperty().bind(mainGridPane.heightProperty().divide(numColumns * gameLogic.getMaxPlayers()));
             keyImage.setImage(keyPic);
             keyImage.translateXProperty().bind(mainGridPane.widthProperty().divide(numColumns * gameLogic.getMaxPlayers()));
-            System.out.println(gameLogic.getKey().getX() + " " + gameLogic.getKey().getY());
+            if (keyDrawn) {
+                mainGridPane.getChildren().remove(keyImage);
+                keyDrawn = false;
+            }
             mainGridPane.add(keyImage, gameLogic.getKey().getX(), gameLogic.getKey().getY());
         }
-        //mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
-        //movePlayer(null);
-        
-        //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
-
     }
 
     private void startTimer(){
