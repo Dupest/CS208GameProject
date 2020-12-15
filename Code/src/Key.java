@@ -10,7 +10,7 @@ public class Key {
     //damage magnitude of the key
     private static int magnitudeModifier = 1;
     
-    //location variables
+    //location of the key on the map
     private int x,y;
 
     //constuctors for the class

@@ -16,7 +16,7 @@ public class Player {
   //  private ArrayList<Key> keyList;
 
     //The list of keys a player would have on them after collection
-    private HashMap<Integer, Key> keyList;
+    private Key key;
     //private int numKeys;
 
     /*reference to the current room a player is in
@@ -34,20 +34,15 @@ public class Player {
     //main constructors
     public Player(){
         healthPool = DEFAULT_HEALTH;
-        keyList = null;
+        key = null;
         currentRoom = null;
     }
 
-    public Player(Room initalRoom){
-        healthPool = DEFAULT_HEALTH;
-        keyList = new HashMap();
-        currentRoom = null;
-    }
     
     //By Svetozar Draganitchki
     public Player(int x,int y){
         healthPool = DEFAULT_HEALTH;
-        keyList = new HashMap();
+        key = null;
         currentRoom = null;
         this.x = x;
         this.y = y;
@@ -84,14 +79,7 @@ public class Player {
     public void setHealthPool(int newHealth){
         healthPool = newHealth;
     }
-    
-    public Key getKey(int keyID){
-        return keyList.get(keyID);
-    }
-     
-     public void setKey(int keyID,Key key){
-        keyList.put(keyID,key);
-    }
+
 
     public void setX(int x) {
         this.x = x;
@@ -135,12 +123,12 @@ public class Player {
         return DEFAULT_HEALTH;
     }
 
-    public HashMap<Integer, Key> getKeyList() {
-        return keyList;
+    public void setKey(Key newKey){
+        key = newKey;
     }
 
-    public void setKeyList(HashMap<Integer, Key> keyList) {
-        this.keyList = keyList;
+    public Key getKey(){
+        return key;
     }
 
     public Room getCurrentRoom() {
@@ -157,7 +145,7 @@ public class Player {
        ToString method to return the health of the player and the key
     */
     public String toString() {
-        return "Player Health:" + healthPool + "Key List" + keyList;
+        return "Player Health:" + healthPool + "Key " + key;
     }
     
      @Override
@@ -171,7 +159,7 @@ public class Player {
 
             return currentRoom == a.currentRoom
                     && this.healthPool== a.healthPool
-                    && this.keyList== a.keyList;
+                    && this.key== a.key;
         }
         else
             return false;
