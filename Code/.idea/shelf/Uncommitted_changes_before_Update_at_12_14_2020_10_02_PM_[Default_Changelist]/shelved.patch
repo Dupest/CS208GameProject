@@ -1,0 +1,156 @@
+Index: src/GameLogic.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import javafx.geometry.Point2D;\r\n\r\nimport java.awt.event.KeyEvent;\r\nimport java.awt.event.KeyListener;\r\nimport java.util.HashMap;\r\nimport java.util.Random;\r\n\r\n/*\r\n * To change this license header, choose License Headers in Project Properties.\r\n * To change this template file, choose Tools | Templates\r\n * and open the template in the editor.\r\n */\r\n\r\n/**\r\n *  By Svetozar Draganitchki\r\n * \r\n */\r\npublic class GameLogic implements KeyListener{\r\n    //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?\r\n    //private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.\r\n\r\n    private HashMap<Point2D, Room> roomList;\r\n    private Key key;\r\n    private HashMap<Integer, Player> playerList;\r\n    private int maxPlayers;\r\n    private int gridRows;\r\n    private int gridColumns;\r\n    private static final int trapChance = 10;\r\n\r\n    \r\n    public GameLogic(){\r\n        roomList = new HashMap<>();\r\n        playerList = new HashMap<>();\r\n        mapInitializing(-1, -1);\r\n        maxPlayers = 4;\r\n        gridColumns = 9;\r\n        gridRows = 9;\r\n    }\r\n\r\n    public GameLogic(int maxPlayers) {\r\n        roomList = new HashMap<>();\r\n        playerList = new HashMap<Integer, Player> ();\r\n        mapInitializing(-1, -1);\r\n        this.maxPlayers = maxPlayers;\r\n        gridColumns = 9;\r\n        gridRows = 9;\r\n    }\r\n    public GameLogic(int maxPlayers, int gridColumns, int gridRows) {\r\n        key = null;\r\n        playerList = new HashMap<Integer, Player> ();\r\n        roomList = new HashMap<>();\r\n        mapInitializing(-1, -1);\r\n        this.maxPlayers = maxPlayers;\r\n        this.gridColumns = gridColumns;\r\n        this.gridRows = gridRows;\r\n    }\r\n\r\n    public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){\r\n        playerList = new HashMap<Integer, Player> ();\r\n        roomList = new HashMap<>();\r\n        this.key = key;\r\n        this.playerList = playerList;\r\n        mapInitializing(-1, -1);\r\n    }\r\n\r\n\r\n    /**\r\n     * method allows there to be a set amount of both\r\n     * players and trapped rooms at the initialization of the\r\n     * game when both parameters are -1\r\n     * otherwise both the number of players and trapped rooms may be changed\r\n     * or only one may be changed-Justin Lamberson\r\n     */\r\n    public void mapInitializing(int players, int trappedRooms){\r\n        //method assumes the map generated is a 9 x 9\r\n        Random rand = new Random();\r\n\r\n        int roomNumber = 1;\r\n\r\n        //traps is max number of traps\r\n        int traps;\r\n        if(trappedRooms > -1){\r\n            traps = trappedRooms;\r\n        } else {\r\n            traps = 10;\r\n        }\r\n\r\n        //loop initializes all rooms\r\n//        for(int i = 0; i < 81; i++){\r\n//            if(rand.nextInt(101) < 50 || traps >= 0){\r\n//                traps--;\r\n//                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));\r\n//                roomNumber++;\r\n//            }else if(roomNumber == 81){\r\n//                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));\r\n//            } else {\r\n//                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));\r\n//                roomNumber++;\r\n//            }\r\n//        }\r\n        //loop initializes all rooms\r\n        for(int y = 0 ; y < 9; y++)\r\n        {\r\n            for(int x = 0 ; x < 9; x++)\r\n            {\r\n                if(rand.nextInt(100) <= trapChance && traps >= 0){\r\n                    System.out.println(\"Set Trap!\");\r\n                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));\r\n                    traps --;\r\n                    roomNumber++;\r\n                } else if (x == 8 && y == 8){\r\n                    roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));\r\n                    roomNumber++;\r\n                }\r\n                else\r\n                {\r\n                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, false, x, y));\r\n                    roomNumber++;\r\n                }\r\n            }\r\n        }\r\n\r\n        int x = rand.nextInt(8);\r\n        int y = rand.nextInt(7);\r\n\r\n        //generates final key =\r\n        key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);\r\n        roomList.get(new Point2D(Math.floor(Math.random()*gridRows), Math.floor(Math.random()*gridColumns)));\r\n\r\n\r\n\r\n\r\n        //generates the number of players specified by the variable players\r\n        //generates the players at the top right of the map\r\n        if(players == -1){\r\n            for(int i = 0; i < 4; i++){\r\n                playerList.put(i+1, new Player(0 ,0));\r\n            }\r\n        }\r\n        else{\r\n            for(int i = 0; i < players; i++){\r\n                playerList.put(i+1, new Player(0 ,0));\r\n            }\r\n        }\r\n\r\n    }\r\n    /*\r\n        By Svetozar Draganitchki\r\n        method that checks if player can enter room\r\n    */\r\n    public boolean canEnter(int roomX, int roomY,Player p){\r\n        if((roomList.get(new Point2D(roomX, roomY)).isLocked())){\r\n            return hasKey(roomX, roomY, p);           //Simplified this logic - DO\r\n        }\r\n        return true;\r\n    }\r\n    /*\r\n        playerMoves depeding on flag and point parameters\r\n        @param int flag the forward and reverse direction\r\n        @param int point the left and right direction\r\n    */\r\n\r\n    public void playerMoves(Player player,int flag, int point){\r\n        if(flag > 0)\r\n        {\r\n            if(point > 0){\r\n                player.getCurrentRoom().setX(player.getCurrentRoom().getX()+1);\r\n            }else{\r\n                player.getCurrentRoom().setX(player.getCurrentRoom().getX()-1);\r\n            }\r\n            \r\n        }else{\r\n            if(point > 0){\r\n                player.getCurrentRoom().setY(player.getCurrentRoom().getY()+1);\r\n            }else{\r\n                player.getCurrentRoom().setY(player.getCurrentRoom().getY()-1);\r\n            }\r\n        }\r\n    }\r\n    \r\n    /*\r\n        By Svetozar Draganitchki\r\n        checks if a player has the matching key to a room\r\n    */\r\n    public boolean hasKey(int roomX, int roomY, Player p){\r\n        if((roomList.get(new Point2D(roomX, roomY)).getDoorID() == p.getKey().getMyRoom().getDoorID())){\r\n            return true;\r\n        } else {\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * checks that a player has not gone out of bounds\r\n     * @param p is the player referenced\r\n     */\r\n    public void EnteredRoom(Player p){\r\n        int x = p.getX();\r\n        int y = p.getY();\r\n        if(x < 0){\r\n            p.setX(0);\r\n        } else if (x > gridColumns){\r\n            p.setX(gridColumns);\r\n        }\r\n\r\n        if(y < 0){\r\n            p.setY(0);\r\n        } else if(y > gridRows){\r\n            p.setY(gridRows);\r\n        }\r\n    }\r\n    \r\n    public Player getPlayer(int playerID){\r\n        return playerList.get(playerID);\r\n    }\r\n    \r\n    public Key getKey(){\r\n        return key;\r\n    }\r\n    \r\n    public Room getRoom(int x, int y){\r\n        return (roomList.get(new Point2D(x, y)));\r\n    }\r\n    \r\n    @Override\r\n    public void keyTyped(KeyEvent e) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void keyPressed(KeyEvent e) {\r\n        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||\r\n            e.getKeyCode() == KeyEvent.VK_D) {\r\n            System.out.println(\"Right key Released\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_LEFT ||\r\n            e.getKeyCode() == KeyEvent.VK_A) {\r\n            System.out.println(\"Left key Released\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||\r\n            e.getKeyCode() == KeyEvent.VK_W) {\r\n            System.out.println(\"Up key pressed\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||\r\n            e.getKeyCode() == KeyEvent.VK_S) {\r\n            System.out.println(\"Down key pressed\");\r\n            \r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void keyReleased(KeyEvent e) {\r\n        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||\r\n            e.getKeyCode() == KeyEvent.VK_D) {\r\n            System.out.println(\"Right key Released\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_LEFT ||\r\n            e.getKeyCode() == KeyEvent.VK_A) {\r\n            System.out.println(\"Left key Released\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||\r\n            e.getKeyCode() == KeyEvent.VK_W) {\r\n            System.out.println(\"Up key pressed\");\r\n            \r\n        }\r\n        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||\r\n            e.getKeyCode() == KeyEvent.VK_S) {\r\n            System.out.println(\"Down key pressed\");\r\n            \r\n        }\r\n    }\r\n\r\n    public HashMap<Point2D, Room> getRoomList() {\r\n        return roomList;\r\n    }\r\n\r\n    public void setRoomList(HashMap<Point2D, Room> roomList) {\r\n        this.roomList = roomList;\r\n    }\r\n\r\n    public void setKey(Key newKey){\r\n        key = newKey;\r\n    }\r\n\r\n\r\n    public HashMap<Integer, Player> getPlayerList() {\r\n        return playerList;\r\n    }\r\n\r\n    public void setPlayerList(HashMap<Integer, Player> playerList) {\r\n        this.playerList = playerList;\r\n    }\r\n\r\n    public int getMaxPlayers() {\r\n        return maxPlayers;\r\n    }\r\n\r\n    public void setMaxPlayers(int maxPlayers) {\r\n        this.maxPlayers = maxPlayers;\r\n    }\r\n\r\n    public static int getTrapChance() {\r\n        return trapChance;\r\n    }\r\n\r\n    public int getGridRows() {\r\n        return gridRows;\r\n    }\r\n\r\n    public void setGridRows(int gridRows) {\r\n        this.gridRows = gridRows;\r\n    }\r\n\r\n    public int getGridColumns() {\r\n        return gridColumns;\r\n    }\r\n\r\n    public void setGridColumns(int gridColumns) {\r\n        this.gridColumns = gridColumns;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/GameLogic.java b/src/GameLogic.java
+--- a/src/GameLogic.java	(revision 76b8d575a88d69d229e72a8ee585a14e4e7939b4)
++++ b/src/GameLogic.java	(date 1608001316518)
+@@ -45,6 +45,7 @@
+         gridColumns = 9;
+         gridRows = 9;
+     }
++
+     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
+         key = null;
+         playerList = new HashMap<Integer, Player> ();
+@@ -55,6 +56,7 @@
+         this.gridRows = gridRows;
+     }
+ 
++
+     public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
+         playerList = new HashMap<Integer, Player> ();
+         roomList = new HashMap<>();
+@@ -134,12 +136,14 @@
+         //generates the players at the top right of the map
+         if(players == -1){
+             for(int i = 0; i < 4; i++){
+-                playerList.put(i+1, new Player(0 ,0));
++                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
++                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+             }
+         }
+         else{
+             for(int i = 0; i < players; i++){
+-                playerList.put(i+1, new Player(0 ,0));
++                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
++                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+             }
+         }
+ 
+@@ -178,7 +182,7 @@
+         }
+     }
+     
+-    /*
++    /**
+         By Svetozar Draganitchki
+         checks if a player has the matching key to a room
+     */
+@@ -217,7 +221,7 @@
+     public Key getKey(){
+         return key;
+     }
+-    
++
+     public Room getRoom(int x, int y){
+         return (roomList.get(new Point2D(x, y)));
+     }
+Index: src/Player.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import javafx.scene.shape.Circle;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\n\r\n//Edited By Svetozar Draganitchki\r\npublic class Player {\r\n\r\n    //used to draw the player on the map\r\n    private Circle playerRender;\r\n\r\n    //default health of the player if the constructor without the health parameter is used\r\n    private static final int DEFAULT_HEALTH = 15;\r\n\r\n    //TODO: Pick one of these two\r\n  //  private ArrayList<Key> keyList;\r\n\r\n    //The list of keys a player would have on them after collection\r\n    private Key key;\r\n    //private int numKeys;\r\n\r\n    /*reference to the current room a player is in\r\n     * if set to null, the player is out of the game\r\n     * or is not playing the game\r\n     */\r\n    private Room currentRoom;\r\n\r\n    //the current health of the player\r\n    private int healthPool;\r\n    \r\n    //variables to keep track of player location\r\n    private int x,y;\r\n\r\n    //main constructors\r\n    public Player(){\r\n        healthPool = DEFAULT_HEALTH;\r\n        key = null;\r\n        currentRoom = null;\r\n    }\r\n\r\n    public Player(Room room){\r\n        healthPool = DEFAULT_HEALTH;\r\n        key = null;\r\n        currentRoom = room;\r\n    }\r\n\r\n    \r\n    //By Svetozar Draganitchki\r\n    public Player(int x,int y){\r\n        healthPool = DEFAULT_HEALTH;\r\n        key = null;\r\n        currentRoom = null;\r\n        this.x = x;\r\n        this.y = y;\r\n    }\r\n\r\n    public void playerDead(){\r\n        if(healthPool <= 0){\r\n            currentRoom = null;\r\n        }\r\n    }\r\n\r\n    //old methods that were moved into the room class\r\n    /*\r\n     *if a trap is triggered, by default, damage taken is one\r\n     */\r\n    /*public void trapTriggered(){\r\n        healthPool--;\r\n    }*/\r\n\r\n    /*\r\n     * Overloaded method does the same thing as the default method\r\n     * but, it allows the damage taken to be set\r\n     */\r\n    /*public void trapTriggered(int damage){\r\n        healthPool -= damage;\r\n    }*/\r\n\r\n\r\n    //getters and setters of the class\r\n    public int getHealthPool(){\r\n        return healthPool;\r\n    }\r\n\r\n    public void setHealthPool(int newHealth){\r\n        healthPool = newHealth;\r\n    }\r\n\r\n\r\n    public void setX(int x) {\r\n        this.x = x;\r\n    }\r\n\r\n    public void setY(int y) {\r\n        this.y = y;\r\n    }\r\n\r\n    //By Svetozar Draganitchki\r\n    public void moveRight(){ x++; }\r\n    \r\n    public void moveLeft(){\r\n        x--;\r\n    }\r\n    \r\n    public void moveForward(){\r\n        y++;\r\n    }\r\n    \r\n    public void moveBackward(){\r\n        y--;\r\n    }\r\n    \r\n    public int getX(){\r\n        return x;\r\n    }\r\n    public int getY(){\r\n        return y;\r\n    }\r\n\r\n    public Circle getPlayerRender() {\r\n        return playerRender;\r\n    }\r\n\r\n    public void setPlayerRender(Circle playerRender) {\r\n        this.playerRender = playerRender;\r\n    }\r\n\r\n    public static int getDefaultHealth() {\r\n        return DEFAULT_HEALTH;\r\n    }\r\n\r\n    public void setKey(Key newKey){\r\n        key = newKey;\r\n    }\r\n\r\n    public Key getKey(){\r\n        return key;\r\n    }\r\n\r\n    public Room getCurrentRoom() {\r\n        return currentRoom;\r\n    }\r\n\r\n    public void setCurrentRoom(Room currentRoom) {\r\n        this.currentRoom = currentRoom;\r\n    }\r\n    \r\n    @Override\r\n    /*\r\n       By Svetozar Draganitcki\r\n       ToString method to return the health of the player and the key\r\n    */\r\n    public String toString() {\r\n        return \"Player Health:\" + healthPool + \"Key \" + key;\r\n    }\r\n    \r\n     @Override\r\n    public boolean equals(Object obj){\r\n        if (obj == this) return true;\r\n\r\n        if (obj == null) return false;\r\n\r\n        if (this.getClass() == obj.getClass()){\r\n            Player a = (Player) obj;\r\n\r\n            return currentRoom == a.currentRoom\r\n                    && this.healthPool== a.healthPool\r\n                    && this.key== a.key;\r\n        }\r\n        else\r\n            return false;\r\n    }\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Player.java b/src/Player.java
+--- a/src/Player.java	(revision 76b8d575a88d69d229e72a8ee585a14e4e7939b4)
++++ b/src/Player.java	(date 1608001113180)
+@@ -54,6 +54,14 @@
+         this.y = y;
+     }
+ 
++    public Player(Room room, int x,int y){
++        healthPool = DEFAULT_HEALTH;
++        key = null;
++        currentRoom = room;
++        this.x = x;
++        this.y = y;
++    }
++
+     public void playerDead(){
+         if(healthPool <= 0){
+             currentRoom = null;
+Index: src/Tester.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n\r\nimport javafx.application.Application;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.Scene;\r\n\r\nimport javafx.scene.layout.VBox;\r\nimport javafx.stage.Stage;\r\n\r\nimport java.io.IOException;\r\n\r\npublic class Tester extends Application {\r\n\r\n    public static void main(String[] args) {\r\n        launch(args);\r\n    }\r\n\r\n    @Override\r\n    public void start(Stage primaryStage) throws IOException {\r\n        FXMLLoader loader = new FXMLLoader(getClass().getResource(\"GameProjectFXML.fxml\"));\r\n        Scene newScene = new Scene((VBox)loader.load());\r\n        primaryStage.setScene(newScene);\r\n        primaryStage.setTitle(\"CastleDelver\");\r\n        primaryStage.setHeight(900);\r\n        primaryStage.setWidth(1600);\r\n        primaryStage.show();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Tester.java b/src/Tester.java
+--- a/src/Tester.java	(revision 76b8d575a88d69d229e72a8ee585a14e4e7939b4)
++++ b/src/Tester.java	(date 1607999709488)
+@@ -24,5 +24,7 @@
+         primaryStage.setHeight(900);
+         primaryStage.setWidth(1600);
+         primaryStage.show();
++
++
+     }
+ }
+\ No newline at end of file
+Index: src/TextTester.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/TextTester.java b/src/TextTester.java
+new file mode 100644
+--- /dev/null	(date 1608001355668)
++++ b/src/TextTester.java	(date 1608001355668)
+@@ -0,0 +1,41 @@
++import java.util.HashMap;
++
++
++/**
++ * tester used to determine
++ * if methods were working correctly
++ */
++public class TextTester {
++    public static void main(String[] args) {
++        GameLogic gamelogic = new GameLogic();
++
++        for (int x = 0; x < gamelogic.getGridRows(); x++) {
++            for (int y = 0; y < gamelogic.getGridColumns(); y++) {
++                Room room = gamelogic.getRoom(x, y);
++                System.out.println("Room Cords: " + room.getX() + ", " + room.getY() + "\nIs locked? " + room.isLocked() + "\nDoor ID: " + room.getDoorID() + "\nTrapped? " + room.isATrap());
++                System.out.print("Key? ");
++                if (room.getKey() == null) {
++                    System.out.println("No");
++                } else {
++                    System.out.println("Yes. Unlocks roomID: " + room.getKey().getMyRoom().getDoorID());
++                }
++
++                if(room.getPlayersInside().containsKey(1)){
++                    System.out.println("Player 1 is inside");
++                }
++                if(room.getPlayersInside().containsKey(2)){
++                    System.out.println("Player 2 is inside");
++                }
++                if(room.getPlayersInside().containsKey(3)){
++                    System.out.println("Player 3 is inside");
++                }
++                if(room.getPlayersInside().containsKey(4)){
++                    System.out.println("Player 4 is inside");
++                }
++                System.out.print("\n")
++            }
++        }
++
++
++    }
++}
