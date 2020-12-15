@@ -20,18 +20,18 @@ public class TextTester {
                     System.out.println("Yes. Unlocks roomID: " + room.getKey().getMyRoom().getDoorID());
                 }
 
-                if(room.getPlayersInside().containsKey(1)){
-                    System.out.println("Player 1 is inside");
-                }
-                if(room.getPlayersInside().containsKey(2)){
-                    System.out.println("Player 2 is inside");
-                }
-                if(room.getPlayersInside().containsKey(3)){
-                    System.out.println("Player 3 is inside");
-                }
-                if(room.getPlayersInside().containsKey(4)){
-                    System.out.println("Player 4 is inside");
-                }
+//                if(room.getPlayersInside().containsKey(1)){
+//                    System.out.println("Player 1 is inside");
+//                }
+//                if(room.getPlayersInside().containsKey(2)){
+//                    System.out.println("Player 2 is inside");
+//                }
+//                if(room.getPlayersInside().containsKey(3)){
+//                    System.out.println("Player 3 is inside");
+//                }
+//                if(room.getPlayersInside().containsKey(4)){
+//                    System.out.println("Player 4 is inside");
+//                }
                 System.out.print("\n");
             }
         }

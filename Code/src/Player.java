@@ -31,6 +31,8 @@ public class Player {
     //variables to keep track of player location
     private int x,y;
 
+    private int hashKey;
+
     //main constructors
     public Player(){
         healthPool = DEFAULT_HEALTH;
@@ -54,12 +56,14 @@ public class Player {
         this.y = y;
     }
 
-    public Player(Room room, int x,int y){
+    public Player(Room room, int x,int y, int hashKey){
         healthPool = DEFAULT_HEALTH;
         key = null;
         currentRoom = room;
         this.x = x;
         this.y = y;
+        this.hashKey = hashKey;
+        playerRender = new Circle();
     }
 
     public void playerDead(){
@@ -152,7 +156,15 @@ public class Player {
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
-    
+
+    public int getHashKey() {
+        return hashKey;
+    }
+
+    public void setHashKey(int hashKey) {
+        this.hashKey = hashKey;
+    }
+
     @Override
     /*
        By Svetozar Draganitcki
@@ -178,6 +190,8 @@ public class Player {
         else
             return false;
     }
+
+
 }
 
 

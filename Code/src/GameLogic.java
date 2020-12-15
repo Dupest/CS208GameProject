@@ -136,14 +136,14 @@ public class GameLogic implements KeyListener{
         //generates the players at the top right of the map
         if(players == -1){
             for(int i = 0; i < 4; i++){
-                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
-                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0, i+1));
+                roomList.get(new Point2D(0, 0)).playerEntry(playerList.get(i+1));
             }
         }
         else{
             for(int i = 0; i < players; i++){
-                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
-                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0, i+1));
+                roomList.get(new Point2D(0, 0)).playerEntry(playerList.get(i+1));
             }
         }
 
@@ -168,19 +168,21 @@ public class GameLogic implements KeyListener{
 
         //We assume point == y
         if(flag == 1){
-            int curY = player.getCurrentRoom().getY();
-            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point));
+            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), point));
 
             //TODO: Fix issue with rehashing players
-            //newRoom.playersInside.put(player., player)
-            player.setCurrentRoom(newRoom);   //
+            newRoom.playerEntry(player);
+            player.setCurrentRoom(newRoom);
 
 
         }
 
         //We assume point == x
         else{
-
+            Room newRoom = roomList.get(new Point2D(point, player.getCurrentRoom().getY()));
+            //TODO: Fix issue with rehashing players
+            newRoom.playerEntry(player);
+            player.setCurrentRoom(newRoom);
         }
 
 
@@ -219,20 +221,27 @@ public class GameLogic implements KeyListener{
      * checks that a player has not gone out of bounds
      * @param p is the player referenced
      */
-    public void EnteredRoom(Player p){
+    public boolean checkMove(Player p){
+        boolean fairMove = true;
         int x = p.getX();
+
         int y = p.getY();
         if(x < 0){
             p.setX(0);
-        } else if (x > gridColumns){
-            p.setX(gridColumns);
+            fairMove = false;
+        } else if (x >= gridColumns){
+            p.setX(gridColumns-1);
+            fairMove = false;
         }
 
         if(y < 0){
             p.setY(0);
-        } else if(y > gridRows){
-            p.setY(gridRows);
+            fairMove = false;
+        } else if(y >= gridRows){
+            p.setY(gridRows-1);
+            fairMove = false;
         }
+        return fairMove;
     }
     
     public Player getPlayer(int playerID){

@@ -18,7 +18,8 @@ public class Room {
     private Rectangle roomRender;
 
     //a hashmap to contain all of the players inside a room
-    HashMap<Integer, Player> playersInside = new HashMap<>();
+    //HashMap<Integer, Player> playersInside = new HashMap<>();
+    LinkedList<Player> playersInside;
 
     //reference to the key that unlocks the room
     private Key roomKey;
@@ -34,12 +35,14 @@ public class Room {
         this.isATrap = false;
         this.roomKey = null;
         this.roomRender = null;
+        playersInside = new LinkedList<>();
     }
     public Room(boolean isLocked, int doorID, boolean isATrap) {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
         this.roomRender = null;
+        playersInside = new LinkedList<>();
     }
     
     //By Svetozar Draganitchki
@@ -50,6 +53,7 @@ public class Room {
         this.x = x;
         this.y = y;
         this.roomRender = null;
+        playersInside = new LinkedList<>();
     }
     //By Svetozar Draganitchki
     public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey) {
@@ -58,6 +62,7 @@ public class Room {
         this.isATrap = isATrap;
         this.roomKey = isKey;
         this.roomRender = null;
+        playersInside = new LinkedList<>();
     }
     //By Svetozar Draganitchki
     public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey, int x, int y) {
@@ -68,6 +73,7 @@ public class Room {
         this.x = x;
         this.y = y;
         this.roomRender = null;
+        playersInside = new LinkedList<>();
     }
 
 
@@ -123,13 +129,30 @@ public class Room {
     public void setRoomRender(Rectangle roomRender) {
         this.roomRender = roomRender;
     }
+//
+//    public HashMap<Integer, Player> getPlayersInside() {
+//        return playersInside;
+//    }
+//
+//    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
+//        this.playersInside = playersInside;
+//    }
 
-    public HashMap<Integer, Player> getPlayersInside() {
+
+    public LinkedList<Player> getPlayersInside() {
         return playersInside;
     }
 
-    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
+    public void setPlayersInside(LinkedList<Player> playersInside) {
         this.playersInside = playersInside;
+    }
+
+    public Key getRoomKey() {
+        return roomKey;
+    }
+
+    public void setRoomKey(Key roomKey) {
+        this.roomKey = roomKey;
     }
 
     public void setX(int x) {
@@ -161,8 +184,8 @@ public class Room {
      * In addition
      * Justin Lamberson
      */
-    public void playerEntry(int playerID, Player player){
-        playersInside.put(playerID, player);
+    public void playerEntry(Player player){
+        playersInside.add(player);
         Random rand = new Random();
         //Math.random() * (max-min+1) + min   - Will return in range
         int damageTaken = rand.nextInt(5);
@@ -175,18 +198,17 @@ public class Room {
                 isATrap = false;
             }
         }
-        playersInside.put(playerID, player);
     }
     
     /**
      * method for removing a player from a room and returning that player
      * -Justin Lamberson
      */
-    public Player playerExiting(int playerID){
-        Player player = playersInside.get(playerID);
-        playersInside.remove(playerID);
+    public Player playerExiting(Player player){
+        playersInside.remove(player);
         return player;
     }
+
 
 
     /**
@@ -195,7 +217,7 @@ public class Room {
      */
     public void debugInitialize(){
         for(int i = 1; i < 5; i++){
-            playersInside.put(i, new Player());
+            playersInside.add(new Player());
         }
         roomKey = new Key();
 
