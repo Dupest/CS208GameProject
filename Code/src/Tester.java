@@ -24,5 +24,7 @@ public class Tester extends Application {
         primaryStage.setHeight(900);
         primaryStage.setWidth(1600);
         primaryStage.show();
+
+
     }
 }

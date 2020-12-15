@@ -45,6 +45,7 @@ public class GameLogic implements KeyListener{
         gridColumns = 9;
         gridRows = 9;
     }
+
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
         key = null;
         playerList = new HashMap<Integer, Player> ();
@@ -54,6 +55,7 @@ public class GameLogic implements KeyListener{
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
     }
+
 
     public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
         playerList = new HashMap<Integer, Player> ();
@@ -134,12 +136,14 @@ public class GameLogic implements KeyListener{
         //generates the players at the top right of the map
         if(players == -1){
             for(int i = 0; i < 4; i++){
-                playerList.put(i+1, new Player(0 ,0));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
+                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
             }
         }
         else{
             for(int i = 0; i < players; i++){
-                playerList.put(i+1, new Player(0 ,0));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
+                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
             }
         }
 
@@ -178,7 +182,7 @@ public class GameLogic implements KeyListener{
         }
     }
     
-    /*
+    /**
         By Svetozar Draganitchki
         checks if a player has the matching key to a room
     */
@@ -217,7 +221,7 @@ public class GameLogic implements KeyListener{
     public Key getKey(){
         return key;
     }
-    
+
     public Room getRoom(int x, int y){
         return (roomList.get(new Point2D(x, y)));
     }

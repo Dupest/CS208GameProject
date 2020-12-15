@@ -54,6 +54,14 @@ public class Player {
         this.y = y;
     }
 
+    public Player(Room room, int x,int y){
+        healthPool = DEFAULT_HEALTH;
+        key = null;
+        currentRoom = room;
+        this.x = x;
+        this.y = y;
+    }
+
     public void playerDead(){
         if(healthPool <= 0){
             currentRoom = null;
