@@ -164,20 +164,41 @@ public class GameLogic implements KeyListener{
         @param int point the left and right direction
     */
 
-    public void playerMoves(Player player,int flag, int point){
+    public void playerMoves(Player player,int flag, int point){             //Point = 1 or -1
+
+        //We assume point == y
+        if(flag == 1){
+            int curY = player.getCurrentRoom().getY();
+            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point);
+
+            //TODO: Fix issue with rehashing players
+            //newRoom.playersInside.put(player., player)
+            player.setCurrentRoom(newRoom);   //
+
+
+        }
+
+        //We assume point == x
+        else{
+
+        }
+
+
+
+
         if(flag > 0)
         {
             if(point > 0){
-                player.getCurrentRoom().setX(player.getCurrentRoom().getX()+1);
+                player.setCurrentRoom()     //.setX(player.getCurrentRoom().getX()+1);
             }else{
-                player.getCurrentRoom().setX(player.getCurrentRoom().getX()-1);
+                player.setCurrentRoom().setX(player.getCurrentRoom().getX()-1);
             }
             
         }else{
             if(point > 0){
-                player.getCurrentRoom().setY(player.getCurrentRoom().getY()+1);
+                player.setCurrentRoom().setY(player.getCurrentRoom().getY()+1);
             }else{
-                player.getCurrentRoom().setY(player.getCurrentRoom().getY()-1);
+                player.setCurrentRoom().setY(player.getCurrentRoom().getY()-1);
             }
         }
     }

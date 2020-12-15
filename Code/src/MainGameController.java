@@ -11,13 +11,12 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -186,7 +185,12 @@ public class MainGameController {
         }
         mainGridPane.add(startingPlayers, 0,0);
         //movePlayer(null);
-        mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
+        System.out.println(System.getProperty("user.dir"));
+        Image keyImage= new Image("key.png");
+        ImageView iv = new ImageView();
+        iv.setImage(keyImage);
+        mainGridPane.add(iv, gameLogic.getKey().getX(), gameLogic.getKey().getY());
+        //mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
         //movePlayer(null);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
