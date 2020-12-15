@@ -1,12 +1,10 @@
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectExpression;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -19,6 +17,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -85,6 +84,7 @@ public class MainGameController<Vbox> {
     private boolean keyDrawn;
 
     private ObjectProperty<Font> fontScaling;
+    ArrayList<DoubleProperty> healthBarUpdaters;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -92,6 +92,7 @@ public class MainGameController<Vbox> {
     public void initialize() {
         keyImage = new ImageView();
         fontScaling = new SimpleObjectProperty<Font>(Font.getDefault());
+        healthBarUpdaters = new ArrayList<>();
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
         gameLogic = new GameLogic(4);
         setGridPaneUp();
@@ -130,9 +131,13 @@ public class MainGameController<Vbox> {
             });
             player.setPlayerRender(c);
             Label playerLabel = new Label("Player" + (i+1));
+            ProgressBar playerHealthBar = new ProgressBar();
+            healthBarUpdaters.add(new SimpleDoubleProperty((double)player.getHealthPool()/(double)Player.getDefaultHealth()));
+            playerHealthBar.progressProperty().bind(healthBarUpdaters.get(healthBarUpdaters.size()-1));
             playerLabel.setTextFill(playerColors[i]);
             playerLabel.fontProperty().bind(fontScaling);
             labelsPane.getChildren().add(playerLabel);
+            labelsPane.getChildren().add(playerHealthBar);
 
 
         }
@@ -360,11 +365,20 @@ public class MainGameController<Vbox> {
     void moveDown(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveForward();
+        move(one, 1);
+    }
+
+    void move(Player one, int flag){
+        boolean trapped;
         boolean wasAllowed = gameLogic.checkMove(one);
         System.out.println(one.getX() + " " +one.getY());
-        if(wasAllowed) {
+        if (wasAllowed) {
             one.getCurrentRoom().playerExiting(one);
-            gameLogic.playerMoves(one, 1, one.getY());
+            trapped = gameLogic.playerMoves(one);
+            if(trapped){
+                System.out.println("Cell was trapped! Health left: " + one.getHealthPool());
+                healthBarUpdaters.get(one.getHashKey()-1).set(one.getHealthPool()/(double)Player.getDefaultHealth());
+            }
             gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
             keyFound();
             doStuff();
@@ -372,7 +386,7 @@ public class MainGameController<Vbox> {
     }
     void keyFound(){
         if(gameLogic.getKey().playerCarrying() && keyDrawn){
-            mainGridPane.getChildren().remove(mainGridPane.getChildren().indexOf(keyImage));
+            mainGridPane.getChildren().remove(keyImage);
             keyDrawn = false;
         }
     }
@@ -380,15 +394,7 @@ public class MainGameController<Vbox> {
     void moveLeft(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveLeft();
-        boolean wasAllowed = gameLogic.checkMove(one);
-        System.out.println(one.getX() + " " +one.getY());
-        if (wasAllowed) {
-            one.getCurrentRoom().playerExiting(one);
-            gameLogic.playerMoves(one, 0, one.getX());
-            gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
-            keyFound();
-            doStuff();
-        }
+        move(one, 0);
     }
 
     @FXML
@@ -396,30 +402,14 @@ public class MainGameController<Vbox> {
 
         Player one = gameLogic.getPlayer(1);
         one.moveRight();
-        boolean wasAllowed = gameLogic.checkMove(one);
-        System.out.println(one.getX() + " " +one.getY());
-        if (wasAllowed) {
-            one.getCurrentRoom().playerExiting(one);
-            gameLogic.playerMoves(one, 0, one.getX());
-            gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
-            keyFound();
-            doStuff();
-        }
+        move(one, 0);
     }
 
     @FXML
     void moveUp(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveBackward();
-        boolean wasAllowed = gameLogic.checkMove(one);
-        System.out.println(one.getX() + " " +one.getY());
-        if (wasAllowed) {
-            one.getCurrentRoom().playerExiting(one);
-            gameLogic.playerMoves(one, 1, one.getY());
-            gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
-            keyFound();
-            doStuff();
-        }
+        move(one, 1);
     }
 
 

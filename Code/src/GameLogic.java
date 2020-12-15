@@ -164,45 +164,27 @@ public class GameLogic{
         @param int point the left and right direction
     */
 
-    public void playerMoves(Player player,int flag, int point){             //Point = 1 or -1
-
+    public boolean playerMoves(Player player){             //Point = 1 or -1
+        boolean trap;
         //We assume point == y
-        if(flag == 1){
-            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), point));
+        //if(flag == 1){
+            Room newRoom = roomList.get(new Point2D(player.getX(), player.getY()));
 
             //TODO: Fix issue with rehashing players
-            newRoom.playerEntry(player);
+            trap = newRoom.playerEntry(player);
             player.setCurrentRoom(newRoom);
 
 
-        }
+        //}
 
-        //We assume point == x
-        else{
-            Room newRoom = roomList.get(new Point2D(point, player.getCurrentRoom().getY()));
-            //TODO: Fix issue with rehashing players
-            newRoom.playerEntry(player);
-            player.setCurrentRoom(newRoom);
-        }
-
-
-
-
-//        if(flag > 0)
-//        {
-//            if(point > 0){
-//                player.setCurrentRoom()     //.setX(player.getCurrentRoom().getX()+1);
-//            }else{
-//                player.setCurrentRoom().setX(player.getCurrentRoom().getX()-1);
-//            }
-//
-//        }else{
-//            if(point > 0){
-//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()+1);
-//            }else{
-//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()-1);
-//            }
+//        //We assume point == x
+//        else{
+//            Room newRoom = roomList.get(new Point2D(point, player.getCurrentRoom().getY()));
+//            //TODO: Fix issue with rehashing players
+//            trap = newRoom.playerEntry(player);
+//            player.setCurrentRoom(newRoom);
 //        }
+        return trap;
     }
     
     /**

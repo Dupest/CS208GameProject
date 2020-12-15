@@ -185,7 +185,8 @@ public class Room {
      * In addition
      * Justin Lamberson
      */
-    public void playerEntry(Player player){
+    public boolean playerEntry(Player player){
+        boolean wasTrapped = isATrap;
         playersInside.add(player);
         Random rand = new Random();
         //Math.random() * (max-min+1) + min   - Will return in range
@@ -203,7 +204,9 @@ public class Room {
             roomKey.playerTakes(player);
             setKey(null);
         }
+        return wasTrapped;
     }
+
     
     /**
      * method for removing a player from a room and returning that player

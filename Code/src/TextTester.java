@@ -36,7 +36,7 @@ public class TextTester {
             }
         }
 
-        gamelogic.playerMoves(gamelogic.getPlayer(1), 0, 1);
+        gamelogic.playerMoves(gamelogic.getPlayer(1));
 
         for(int i = 1; i < 5; i++){
             System.out.println("Player " + i + " Cords: " + gamelogic.getPlayer(i).getCurrentRoom().getX() + ", " + gamelogic.getPlayer(i).getCurrentRoom().getY());
