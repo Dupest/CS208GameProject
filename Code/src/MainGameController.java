@@ -54,6 +54,8 @@ public class MainGameController {
     private final Color[] playerColors = {Color.VIOLET, Color.ORANGE, Color.RED, Color.BLACK};
 
     private static final int PADDING = 2;
+    private static final int GAME_TIME = 60;
+    private int gameTimer;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
@@ -81,6 +83,8 @@ public class MainGameController {
         playerMap = new HashMap<>();
 
         gameLogic.mapInitializing(-1,-1);
+        gameTimer = GAME_TIME;
+        startTimer();
     }
 
 
@@ -106,24 +110,6 @@ public class MainGameController {
      * Draw things
      */
     private void doStuff(){
-        long endTime = 60;
-        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
-        final Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.millis( 500 ),
-                        event -> {
-                            final long diff = endTime - System.currentTimeMillis();
-                            if ( diff < 0 ) {
-                                //  timeLabel.setText( "00:00:00" );
-                                timerLabel.setText( timeFormat.format( 0 ) );
-                            } else {
-                                timerLabel.setText( timeFormat.format( diff ) );
-                            }
-                        }
-                )
-        );
-        timeline.setCycleCount( Animation.INDEFINITE );
-        timeline.play();
         int numColumns = gameLogic.getGridColumns();
         int numRows  = gameLogic.getGridRows();
         //First call to doStuff() will be in the initialize() method and for do to order of the loader's ops, getHeight() and getWidth() will return 0 at this point.
@@ -207,6 +193,34 @@ public class MainGameController {
 
     }
 
+    private void startTimer(){
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
+            timerLabel.setText(Integer.toString(gameTimer));
+            gameTimer = gameTimer-1;
+        }));
+        //timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+//        long endTime = 60;
+//        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
+//        final Timeline timeline = new Timeline(
+//                new KeyFrame(
+//                        Duration.millis( 500 ),
+//                        event -> {
+//                            long diff = endTime - System.currentTimeMillis();
+//                            if ( diff < 0 ) {
+//                                //  timeLabel.setText( "00:00:00" );
+//                                timerLabel.setText( timeFormat.format( 0 ) );
+//                            } else {
+//                                timerLabel.setText( timeFormat.format( diff ) );
+//                            }
+//                        }
+//                )
+//        );
+//        timeline.setCycleCount( Animation.INDEFINITE );
+//        timeline.play();
+    }
     private void populateArray(){
         for (Node child : mainGridPane.getChildren()) {
             Integer column = GridPane.getColumnIndex(child);
@@ -246,7 +260,7 @@ public class MainGameController {
 
     }
 
-    //GUI to draw keyse
+    //GUI to draw keys
     private Rectangle drawKey(Rectangle Rect){
         Rect.setWidth(25);
         Rect.setHeight(12);
