@@ -169,7 +169,7 @@ public class GameLogic implements KeyListener{
         //We assume point == y
         if(flag == 1){
             int curY = player.getCurrentRoom().getY();
-            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point);
+            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point));
 
             //TODO: Fix issue with rehashing players
             //newRoom.playersInside.put(player., player)
@@ -186,21 +186,21 @@ public class GameLogic implements KeyListener{
 
 
 
-        if(flag > 0)
-        {
-            if(point > 0){
-                player.setCurrentRoom()     //.setX(player.getCurrentRoom().getX()+1);
-            }else{
-                player.setCurrentRoom().setX(player.getCurrentRoom().getX()-1);
-            }
-            
-        }else{
-            if(point > 0){
-                player.setCurrentRoom().setY(player.getCurrentRoom().getY()+1);
-            }else{
-                player.setCurrentRoom().setY(player.getCurrentRoom().getY()-1);
-            }
-        }
+//        if(flag > 0)
+//        {
+//            if(point > 0){
+//                player.setCurrentRoom()     //.setX(player.getCurrentRoom().getX()+1);
+//            }else{
+//                player.setCurrentRoom().setX(player.getCurrentRoom().getX()-1);
+//            }
+//
+//        }else{
+//            if(point > 0){
+//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()+1);
+//            }else{
+//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()-1);
+//            }
+//        }
     }
     
     /**
