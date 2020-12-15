@@ -202,10 +202,12 @@ public class MainGameController {
             }
         }
         //Way to draw traps
-        for(int i = 1; i < 81; i++){
-            if(gameLogic.getRoom(i).isATrap()) {
-                Room currRoom = gameLogic.getRoom(i);
-                //mainGridPane.add(drawTrap(new Rectangle(currRoom.getRoomRender().getX(), currRoom.getRoomRender().getY())), currRoom.getX(), currRoom.getY());
+        for(int i = 0; i < numRows; i++){
+            for(int j = 0; j < numColumns; j++) {
+                if (gameLogic.getRoom(i, j).isATrap()) {
+                    Room currRoom = gameLogic.getRoom(i, j);
+                    //mainGridPane.add(drawTrap(new Rectangle(currRoom.getRoomRender().getX(), currRoom.getRoomRender().getY())), currRoom.getX(), currRoom.getY());
+                }
             }
         }
 

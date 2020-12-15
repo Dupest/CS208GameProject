@@ -29,9 +29,8 @@ public class GameLogic implements KeyListener{
 
     
     public GameLogic(){
-
         roomList = new HashMap<>();
-        playerList = new HashMap<Integer, Player> ();
+        playerList = new HashMap<>();
         mapInitializing(-1, -1);
         maxPlayers = 4;
         gridColumns = 9;
@@ -39,26 +38,26 @@ public class GameLogic implements KeyListener{
     }
 
     public GameLogic(int maxPlayers) {
-
+        roomList = new HashMap<>();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing(-1, -1);
         this.maxPlayers = maxPlayers;
         gridColumns = 9;
         gridRows = 9;
-        roomList = new HashMap<>();
     }
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
         key = null;
         playerList = new HashMap<Integer, Player> ();
+        roomList = new HashMap<>();
         mapInitializing(-1, -1);
         this.maxPlayers = maxPlayers;
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
-        playerList = new HashMap<Integer, Player> ();
     }
 
     public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
         playerList = new HashMap<Integer, Player> ();
+        roomList = new HashMap<>();
         this.key = key;
         this.playerList = playerList;
         mapInitializing(-1, -1);
