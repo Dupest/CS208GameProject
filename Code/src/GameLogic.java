@@ -1,3 +1,5 @@
+import javafx.geometry.Point2D;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -16,6 +18,8 @@ import java.util.Random;
 public class GameLogic implements KeyListener{
     //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
     private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
+
+    private HashMap<Point2D, Room> roomList;
     private Key key;
     private HashMap<Integer, Player> playerList;
     private int maxPlayers;
@@ -103,16 +107,16 @@ public class GameLogic implements KeyListener{
             for(int x = 0 ; x < 9; x ++)
             {
                 if(rand.nextInt(100) <= trapChance && traps >= 0){
-                    mapLayout[x][y] =new Room(false, roomNumber, true, x, y);
+                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber++;
                 } else if (x == 8 && y == 8){
-                    mapLayout[x][y] = new Room(true, roomNumber, false, x, y);
+                    roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
                     roomNumber++;
                 }
                 else
                 {
-                    mapLayout[x][y] = new Room(true, roomNumber, false, x, y);
+                    roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
                     roomNumber++;
                 }
             }
