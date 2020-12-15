@@ -38,6 +38,12 @@ public class Player {
         currentRoom = null;
     }
 
+    public Player(Room room){
+        healthPool = DEFAULT_HEALTH;
+        key = null;
+        currentRoom = room;
+    }
+
     
     //By Svetozar Draganitchki
     public Player(int x,int y){
