@@ -148,6 +148,9 @@ public class GameLogic implements KeyListener{
         }
 
     }
+    public void simulate(){
+        
+    }
     /*
         By Svetozar Draganitchki
         method that checks if player can enter room
@@ -163,29 +166,25 @@ public class GameLogic implements KeyListener{
         @param int flag the forward and reverse direction
         @param int point the left and right direction
     */
-
     public void playerMoves(Player player,int flag, int point){             //Point = 1 or -1
-
         //We assume point == y
-        if(flag == 1){
+        if(flag > 0){
             int curY = player.getCurrentRoom().getY();
             Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point));
 
             //TODO: Fix issue with rehashing players
             //newRoom.playersInside.put(player., player)
             player.setCurrentRoom(newRoom);   //
-
-
         }
-
         //We assume point == x
         else{
+            int curX = player.getCurrentRoom().getX();
+            Room newRoom = roomList.get(new Point2D(curX+point , player.getCurrentRoom().getY()));
 
+            //TODO: Fix issue with rehashing players
+            //newRoom.playersInside.put(player., player)
+            player.setCurrentRoom(newRoom);   //
         }
-
-
-
-
 //        if(flag > 0)
 //        {
 //            if(point > 0){
