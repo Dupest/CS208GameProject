@@ -2,6 +2,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -41,7 +42,7 @@ public class MainGameController {
     private Label timerLabel;
 
 
-    private Room[][]  mapLayout;
+    //private Room[][]  mapLayout;
     private HashMap<Integer, Key> keyMap;
     private HashMap<Integer, Player> playerMap;
 
@@ -65,7 +66,7 @@ public class MainGameController {
         //Init arrays
         gridPaneNodes = new Node[numRows][numColumns];
         canvases = new Node[numRows][numColumns];
-        mapLayout = new Room[numRows][numColumns];
+        //mapLayout = new Room[numRows][numColumns];
         populateArray();
 
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
@@ -76,7 +77,7 @@ public class MainGameController {
         keyMap = new HashMap<>();
         playerMap = new HashMap<>();
 
-        mapInitializing();
+        gameLogic.mapInitializing(-1,-1);
         long endTime = 60;
         Label timeLabel = new Label();
         DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
@@ -97,49 +98,7 @@ public class MainGameController {
         timeline.setCycleCount( Animation.INDEFINITE );
         timeline.play();
     }
-    /*
-    initializes the map depending on the size of the map and
-    number of players. By default, it generates a 9 x 9 map
-    and 2 players (Justin Lamberson)
-     */
-    public void mapInitializing(){
-        int numColumns = gameLogic.getGridColumns();
-        int numRows  = gameLogic.getGridRows();
-        System.out.println(numColumns + " " + numRows);
-        //assumes that there are 2 players and a 9 x 9 map
-        Random rand = new Random();
 
-        //traps is max number of traps
-        int traps = 10;
-        int roomNumber = 1;
-
-        //loop initializes all rooms
-        for(int i = 0; i < numRows; i++){
-            for(int k = 0; k < numColumns; k++){
-                if(rand.nextInt(101) < 50 || traps >= 0){
-                    traps--;
-                    mapLayout[i][k] = new Room(false, roomNumber, true);
-
-                //If last room ie (8,8)
-                }else if(i == numRows-1 && k == numColumns-1){
-
-                    //Make special constructor for the final room so this is different from else loop
-                    mapLayout[i][k] = new Room(true, roomNumber, false);
-                } else {
-                    mapLayout[i][k] = new Room(false, roomNumber, false);
-                }
-                roomNumber++;
-            }
-        }
-        System.out.println(roomNumber);
-        //generates final key =
-        //keyList.put(81, new Key(mapLayout[8][8] ,1));
-
-        //generates the two players in the top 2 rooms
-        playerMap.put(1, new Player(mapLayout[0][0]));
-        playerMap.put(2, new Player(mapLayout[0][1]));
-
-    }
 
     private void setGridPaneUp(){
         for (int i = 0 ; i < gameLogic.getGridRows(); i++) {
@@ -193,7 +152,7 @@ public class MainGameController {
                 gc = newMapImage.getGraphicsContext2D();
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
-                mapLayout[i][k].setRoomRender(newRect);
+                gameLogic.getRoomList().get(new Point2D(i, k)).setRoomRender(newRect);
                 drawRectangle(gc, newRect);
                 Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
@@ -204,9 +163,11 @@ public class MainGameController {
         //Way to draw traps
         for(int i = 0; i < numRows; i++){
             for(int j = 0; j < numColumns; j++) {
-                if (gameLogic.getRoom(i, j).isATrap()) {
-                    Room currRoom = gameLogic.getRoom(i, j);
-                    //mainGridPane.add(drawTrap(new Rectangle(currRoom.getRoomRender().getX(), currRoom.getRoomRender().getY())), currRoom.getX(), currRoom.getY());
+                Room currRoom = gameLogic.getRoom(i, j);
+                if (currRoom.isATrap()) {
+                    Rectangle rec = new Rectangle(currRoom.getRoomRender().getX()-currRoom.getRoomRender().getWidth()/2.0, currRoom.getRoomRender().getY()-currRoom.getRoomRender().getHeight()/2.0, currRoom.getX(), currRoom.getY());
+                    drawTrap(rec);
+                    mainGridPane.add(rec, i, j);
                 }
             }
         }

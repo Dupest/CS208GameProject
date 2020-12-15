@@ -99,9 +99,9 @@ public class GameLogic implements KeyListener{
 //            }
 //        }
         //loop initializes all rooms
-        for(int y = 0 ; y < 9; y ++)
+        for(int y = 0 ; y < 9; y++)
         {
-            for(int x = 0 ; x < 9; x ++)
+            for(int x = 0 ; x < 9; x++)
             {
                 if(rand.nextInt(100) <= trapChance && traps >= 0){
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
