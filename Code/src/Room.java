@@ -155,7 +155,7 @@ public class Room {
         return Objects.hash(doorID, isATrap);
     }
 
-    /*checks for a trap when a player comes into a room
+    /**checks for a trap when a player comes into a room
      *if room does have a trap, the player takes a random amount damage
      * Damage taken can be no less than 1
      * In addition
@@ -178,7 +178,7 @@ public class Room {
         playersInside.put(playerID, player);
     }
     
-    /*
+    /**
      * method for removing a player from a room and returning that player
      * -Justin Lamberson
      */
@@ -189,7 +189,7 @@ public class Room {
     }
 
 
-    /*
+    /**
      * a debug method in order to populate the room with both a player
      * and a key
      */
