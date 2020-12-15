@@ -186,8 +186,9 @@ public class MainGameController {
         mainGridPane.add(startingPlayers, 0,0);
         //movePlayer(null);
         System.out.println(System.getProperty("user.dir"));
-        Image keyImage= new Image("key.png");
+        Image keyImage= new Image("smallKey.png");
         ImageView iv = new ImageView();
+        //iv.scal
         iv.setImage(keyImage);
         mainGridPane.add(iv, gameLogic.getKey().getX(), gameLogic.getKey().getY());
         //mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
@@ -200,8 +201,12 @@ public class MainGameController {
     private void startTimer(){
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
-            timerLabel.setText(Integer.toString(gameTimer));
+            timerLabel.setText("Time Left: " + Integer.toString(gameTimer));
+            timerLabel.setTextFill(Color.DARKSLATEBLUE);
             gameTimer = gameTimer-1;
+            if(gameTimer < 15){
+                timerLabel.setTextFill(Color.RED);
+            }
         }));
         //timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(Timeline.INDEFINITE);
