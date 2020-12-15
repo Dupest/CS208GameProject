@@ -57,4 +57,27 @@ public class Key {
         Key.magnitudeModifier = magnitudeModifier;
     }
 
+    public Room getRoomUnlock() {
+        return roomUnlock;
+    }
+
+    public void setRoomUnlock(Room roomUnlock) {
+        this.roomUnlock = roomUnlock;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 }

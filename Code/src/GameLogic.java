@@ -79,7 +79,7 @@ public class GameLogic implements KeyListener{
 
         //traps is max number of traps
         int traps;
-        if(trappedRooms >= -1){
+        if(trappedRooms > -1){
             traps = trappedRooms;
         } else {
             traps = 10;
@@ -104,6 +104,7 @@ public class GameLogic implements KeyListener{
             for(int x = 0 ; x < 9; x++)
             {
                 if(rand.nextInt(100) <= trapChance && traps >= 0){
+                    System.out.println("Set Trap!");
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber++;
@@ -113,7 +114,7 @@ public class GameLogic implements KeyListener{
                 }
                 else
                 {
-                    roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
+                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, false, x, y));
                     roomNumber++;
                 }
             }
@@ -124,6 +125,7 @@ public class GameLogic implements KeyListener{
 
         //generates final key =
         key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);
+        roomList.get(new Point2D(Math.floor(Math.random()*gridRows), Math.floor(Math.random()*gridColumns)));
 
 
 

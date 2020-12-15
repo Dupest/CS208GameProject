@@ -78,25 +78,6 @@ public class MainGameController {
         playerMap = new HashMap<>();
 
         gameLogic.mapInitializing(-1,-1);
-        long endTime = 60;
-        Label timeLabel = new Label();
-        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
-        final Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.millis( 500 ),
-                        event -> {
-                            final long diff = endTime - System.currentTimeMillis();
-                            if ( diff < 0 ) {
-                                //  timeLabel.setText( "00:00:00" );
-                                timeLabel.setText( timeFormat.format( 0 ) );
-                            } else {
-                                timeLabel.setText( timeFormat.format( diff ) );
-                            }
-                        }
-                )
-        );
-        timeline.setCycleCount( Animation.INDEFINITE );
-        timeline.play();
     }
 
 
@@ -120,6 +101,24 @@ public class MainGameController {
      * Draw things
      */
     private void doStuff(){
+        long endTime = 60;
+        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
+        final Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis( 500 ),
+                        event -> {
+                            final long diff = endTime - System.currentTimeMillis();
+                            if ( diff < 0 ) {
+                                //  timeLabel.setText( "00:00:00" );
+                                timerLabel.setText( timeFormat.format( 0 ) );
+                            } else {
+                                timerLabel.setText( timeFormat.format( diff ) );
+                            }
+                        }
+                )
+        );
+        timeline.setCycleCount( Animation.INDEFINITE );
+        timeline.play();
         int numColumns = gameLogic.getGridColumns();
         int numRows  = gameLogic.getGridRows();
         //First call to doStuff() will be in the initialize() method and for do to order of the loader's ops, getHeight() and getWidth() will return 0 at this point.
@@ -165,7 +164,7 @@ public class MainGameController {
             for(int j = 0; j < numColumns; j++) {
                 Room currRoom = gameLogic.getRoom(i, j);
                 if (currRoom.isATrap()) {
-                    Rectangle rec = new Rectangle(currRoom.getRoomRender().getX()-currRoom.getRoomRender().getWidth()/2.0, currRoom.getRoomRender().getY()-currRoom.getRoomRender().getHeight()/2.0, currRoom.getX(), currRoom.getY());
+                    Rectangle rec = new Rectangle(currRoom.getRoomRender().getX(), currRoom.getRoomRender().getY(), currRoom.getX(), currRoom.getY());
                     drawTrap(rec);
                     mainGridPane.add(rec, i, j);
                 }
@@ -198,7 +197,7 @@ public class MainGameController {
         }
         mainGridPane.add(startingPlayers, 0,0);
         //movePlayer(null);
-        mainGridPane.add(drawKey(new Rectangle()), 7, 7);
+        mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
         //movePlayer(null);
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
