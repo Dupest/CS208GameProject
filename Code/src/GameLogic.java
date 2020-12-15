@@ -152,8 +152,28 @@ public class GameLogic implements KeyListener{
         }
         return true;
     }
+    /*
+        playerMoves depeding on flag and point parameters
+        @param int flag the forward and reverse direction
+        @param int point the left and right direction
+    */
 
-    public void playerMoves(Player player){
+    public void playerMoves(Player player,int flag, int point){
+        if(flag > 0)
+        {
+            if(point > 0){
+                player.getCurrentRoom().setX(player.getCurrentRoom().getX()+1);
+            }else{
+                player.getCurrentRoom().setX(player.getCurrentRoom().getX()-1);
+            }
+            
+        }else{
+            if(point > 0){
+                player.getCurrentRoom().setY(player.getCurrentRoom().getY()+1);
+            }else{
+                player.getCurrentRoom().setY(player.getCurrentRoom().getY()-1);
+            }
+        }
     }
     
     /*
