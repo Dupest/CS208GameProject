@@ -2,8 +2,10 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -60,6 +62,7 @@ public class MainGameController {
 
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
         gameLogic = new GameLogic(4);
+        setGridPaneUp();
         int numColumns = mainGridPane.getColumnConstraints().size();
         int numRows  = mainGridPane.getRowConstraints().size();
         //setGridPaneUp();
@@ -84,13 +87,15 @@ public class MainGameController {
     private void setGridPaneUp(){
         for (int i = 0 ; i < gameLogic.getGridRows(); i++) {
             RowConstraints row = new RowConstraints();
-            row.setVgrow(Priority.ALWAYS);
+            //row.setVgrow(Priority.ALWAYS);
+            row.setValignment(VPos.CENTER);
             mainGridPane.getRowConstraints().add(row);
         }
 
         for (int j = 0 ; j < gameLogic.getGridColumns(); j++) {
             ColumnConstraints col = new ColumnConstraints();
-            col.setHgrow(Priority.ALWAYS);
+            //col.setHgrow(Priority.ALWAYS);
+            col.setHalignment(HPos.CENTER);
             mainGridPane.getColumnConstraints().add(col);
         }
     }
@@ -139,10 +144,10 @@ public class MainGameController {
         mainGridPane.getChildren().add(0, node);
         GraphicsContext gc;
         Canvas newMapImage = null;
-        //For each node within the gridpane draw a circle representing a room.
+        //For each node within the gridpane draw a square representing a room.
         for(int i = 0; i < numRows; i++){
             for(int k = 0; k < numColumns; k++){
-
+                Room currRoom = gameLogic.getRoom(i, k);
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
                 newMapImage = new Canvas(winWidth/numColumns, winHeight/numRows);
                 canvases[i][k] = newMapImage;
@@ -152,24 +157,22 @@ public class MainGameController {
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth()/2.0, newMapImage.getHeight()/2.0, newMapImage.getWidth()-PADDING, newMapImage.getHeight()-PADDING);
                 gameLogic.getRoomList().get(new Point2D(i, k)).setRoomRender(newRect);
-                drawRectangle(gc, newRect);
+                drawRectangle(gc, newRect, currRoom.isATrap());
                 Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
                 
             }
         }
-        //Way to draw traps
-        for(int i = 0; i < numRows; i++){
-            for(int j = 0; j < numColumns; j++) {
-                Room currRoom = gameLogic.getRoom(i, j);
-                if (currRoom.isATrap()) {
-                    Rectangle rec = new Rectangle(currRoom.getRoomRender().getX(), currRoom.getRoomRender().getY(), currRoom.getX(), currRoom.getY());
-                    drawTrap(rec);
-                    mainGridPane.add(rec, i, j);
-                }
-            }
-        }
+//        //Way to draw traps
+//        for(int i = 0; i < numRows; i++){
+//            for(int j = 0; j < numColumns; j++) {
+//                Room currRoom = gameLogic.getRoom(i, j);
+//                if (currRoom.isATrap()) {
+//                    (currRoom.getRoomRender()).
+//                }
+//            }
+//        }
 
         //To keep track of when to jump down on the y offset.
         int[] xYOffsets = {0, 0};
@@ -231,25 +234,18 @@ public class MainGameController {
         doStuff();
     }
 
-    private void drawRectangle(GraphicsContext gc,Rectangle rect){
+    private void drawRectangle(GraphicsContext gc,Rectangle rect, boolean isTrap){
         gc.setFill(Color.DARKGREY);
+        if(isTrap){
+            gc.setFill(Color.RED);
+        }
         gc.fillRect(rect.getX()-rect.getWidth()/2.0,
                 rect.getY()-rect.getHeight()/2.0,
                 rect.getWidth(),
                 rect.getHeight());
-        gc.setLineWidth(15);
-        gc.setStroke(Color.ORANGE);
+
     }
 
-    //TODO make players able to be visable in rooms where they are as well as deleting them from rooms
-    //GUI to draw traps
-    private Rectangle drawTrap(Rectangle Rect){
-        Rect.setWidth(individualGridPaneWidth/3.0);
-        Rect.setHeight(individualGridPaneHeight/3.0);
-        Rect.setFill(Color.GREENYELLOW);
-        //Rect.setTranslateX(58);
-        return Rect;
-    }
     //GUI to draw keyse
     private Rectangle drawKey(Rectangle Rect){
         Rect.setWidth(25);

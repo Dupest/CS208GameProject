@@ -104,7 +104,7 @@ public class GameLogic implements KeyListener{
             for(int x = 0 ; x < 9; x++)
             {
                 if(rand.nextInt(100) <= trapChance && traps >= 0){
-                    System.out.println("Set Trap!");
+                    //System.out.println("Set Trap!");
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber++;
