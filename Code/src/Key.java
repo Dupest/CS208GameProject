@@ -13,6 +13,8 @@ public class Key {
     //location of the key on the map
     private int x,y;
 
+    private int playerID;
+
     //constuctors for the class
     public Key(){
         this.roomUnlock = null;
@@ -29,6 +31,7 @@ public class Key {
         this.damageMagnitude = damageMagnitude*magnitudeModifier;
         this.x = x;
         this.y = y;
+        this.playerID = -1;
     }
 
 
@@ -79,5 +82,14 @@ public class Key {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void playerTakes(Player player){
+        player.setKey(this);
+        playerID = player.getHashKey();
+
+    }
+    public boolean playerCarrying(){
+        return playerID != -1;
     }
 }

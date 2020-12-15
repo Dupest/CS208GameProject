@@ -1,0 +1,7 @@
+.root{
+    -fx-font-size: 40px;
+}
+.label{
+    -fx-pref-height: auto;
+    -fx-font-size: 26;
+}

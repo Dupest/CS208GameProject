@@ -15,7 +15,7 @@ import java.util.Random;
  *  By Svetozar Draganitchki
  * 
  */
-public class GameLogic implements KeyListener{
+public class GameLogic{
     //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
     //private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
 
@@ -127,7 +127,7 @@ public class GameLogic implements KeyListener{
 
         //generates final key =
         key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);
-        roomList.get(new Point2D(Math.floor(Math.random()*gridRows), Math.floor(Math.random()*gridColumns)));
+        roomList.get(new Point2D(x,y)).setKey(key);
 
 
 
@@ -241,6 +241,7 @@ public class GameLogic implements KeyListener{
             p.setY(gridRows-1);
             fairMove = false;
         }
+        System.out.println(p.getKey() == null);
         return fairMove;
     }
     
@@ -254,59 +255,6 @@ public class GameLogic implements KeyListener{
 
     public Room getRoom(int x, int y){
         return (roomList.get(new Point2D(x, y)));
-    }
-    
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||
-            e.getKeyCode() == KeyEvent.VK_D) {
-            System.out.println("Right key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT ||
-            e.getKeyCode() == KeyEvent.VK_A) {
-            System.out.println("Left key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||
-            e.getKeyCode() == KeyEvent.VK_W) {
-            System.out.println("Up key pressed");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||
-            e.getKeyCode() == KeyEvent.VK_S) {
-            System.out.println("Down key pressed");
-            
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||
-            e.getKeyCode() == KeyEvent.VK_D) {
-            System.out.println("Right key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT ||
-            e.getKeyCode() == KeyEvent.VK_A) {
-            System.out.println("Left key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||
-            e.getKeyCode() == KeyEvent.VK_W) {
-            System.out.println("Up key pressed");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||
-            e.getKeyCode() == KeyEvent.VK_S) {
-            System.out.println("Down key pressed");
-            
-        }
     }
 
     public HashMap<Point2D, Room> getRoomList() {

@@ -1,6 +1,12 @@
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectExpression;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -24,10 +30,11 @@ import java.awt.*;
 import java.sql.Time;
 import java.util.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 //Edited By Svetozar Draganitchki
-public class MainGameController {
+public class MainGameController<Vbox> {
 
     //We keep track of the canvases and gridPane node refs since they're made dynamically
     private GridPane[][] gridPaneNodes;
@@ -39,6 +46,9 @@ public class MainGameController {
     private VBox rootPane;
 
     @FXML
+    private BorderPane mainPane;
+
+    @FXML
     private GridPane mainGridPane;
 
     @FXML
@@ -46,6 +56,9 @@ public class MainGameController {
 
     @FXML
     private Label timerLabel;
+
+    @FXML
+    private VBox labelsPane;
 
     @FXML
     private Button upButton;
@@ -62,18 +75,23 @@ public class MainGameController {
 
     private double individualGridPaneWidth;
     private double individualGridPaneHeight;
-    private static final Color[] playerColors = {Color.VIOLET, Color.ORANGE, Color.RED, Color.BLACK};
+    private static final Color[] playerColors = {Color.VIOLET, Color.ORANGE, Color.BLUE, Color.SIENNA};
     private static final int NUM_COLORS = playerColors.length;
 
     private static final int PADDING = 2;
     private static final int GAME_TIME = 60;
     private int gameTimer;
+    private ImageView keyImage;
+    private boolean keyDrawn;
+
+    private ObjectProperty<Font> fontScaling;
 
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
      */
     public void initialize() {
-
+        keyImage = new ImageView();
+        fontScaling = new SimpleObjectProperty<Font>(Font.getDefault());
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
         gameLogic = new GameLogic(4);
         setGridPaneUp();
@@ -91,22 +109,32 @@ public class MainGameController {
         gameTimer = GAME_TIME;
         startTimer();
         setUpPlayerGraphics();
-
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
         mainGridPane.heightProperty().addListener(evt -> doStuff());
         mainGridPane.widthProperty().addListener(evt -> doStuff());
+        labelsPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> fontScaling.set(Font.font(newWidth.doubleValue() / 4)));
     }
 
     private void setUpPlayerGraphics(){
         int[] xYOffsets = {0, 0};
         double radius = Math.min(individualGridPaneHeight/gameLogic.getMaxPlayers(), individualGridPaneWidth/gameLogic.getMaxPlayers())-(PADDING/2.0);
-        if(radius < 5){
-            radius = 15;
-        }
+//        if(radius < 5){
+//            radius = 15;
+//        }
         for(int i = 0; i < gameLogic.getPlayerList().size();i++){
             Player player = gameLogic.getPlayerList().get(i+1);
-            player.setPlayerRender(new Circle(radius, playerColors[i%NUM_COLORS]));
-            //gameLogic.getRoomList().get(new Point2D(0,0)).playerEntry(player);
+            Circle c = new Circle(radius, playerColors[i]);
+            c.radiusProperty().bind(Bindings.min(mainGridPane.widthProperty(), mainGridPane.heightProperty()).divide(gameLogic.getGridRows()*gameLogic.getMaxPlayers()));
+            c.radiusProperty().addListener((obs, old , nw)-> {
+                System.out.println("old = " + old + " new: " + nw);
+            });
+            player.setPlayerRender(c);
+            Label playerLabel = new Label("Player" + (i+1));
+            playerLabel.setTextFill(playerColors[i]);
+            playerLabel.fontProperty().bind(fontScaling);
+            labelsPane.getChildren().add(playerLabel);
+
+
         }
 
     }
@@ -132,7 +160,6 @@ public class MainGameController {
      * Draw things
      */
     private void doStuff(){
-        //setUpPlayerGraphics();
         int numColumns = gameLogic.getGridColumns();
         int numRows  = gameLogic.getGridRows();
         //First call to doStuff() will be in the initialize() method and for do to order of the loader's ops, getHeight() and getWidth() will return 0 at this point.
@@ -191,47 +218,16 @@ public class MainGameController {
                 
             }
         }
-//        //Way to draw traps
-//        for(int i = 0; i < numRows; i++){
-//            for(int j = 0; j < numColumns; j++) {
-//                Room currRoom = gameLogic.getRoom(i, j);
-//                if (currRoom.isATrap()) {
-//                    (currRoom.getRoomRender()).
-//                }
-//            }
-//        }
-
-//        //To keep track of when to jump down on the y offset.
-//        int[] xYOffsets = {0, 0};
-//
-//        //Approximate width/height of each individual rectangle
-//        //double individualGridPaneWidth = (winWidth/numColumns);
-//       // double individualGridPaneHeight = (winHeight/numRows);
-//
-//        //Take the lesser of the two values ( should usually be the height, but..) and sets the radius to half that value (accounting for padding)
-//        double radius = Math.min(individualGridPaneHeight/gameLogic.getMaxPlayers(), individualGridPaneWidth/gameLogic.getMaxPlayers())-(PADDING/2.0);
-//
-//        //TODO: Check if FlowPane offers an easier implementation.
-//        GridPane startingPlayers = new GridPane();
-//
-//        startingPlayers.setAlignment(Pos.CENTER);
-//        startingPlayers.setHgap(individualGridPaneHeight/gameLogic.getMaxPlayers());
-//        startingPlayers.setVgap(PADDING);
-//        for(int i = 0; i < gameLogic.getMaxPlayers(); i++) {
-//            startingPlayers.add(new Circle(radius, playerColors[i%NUM_COLORS]), xYOffsets[0], xYOffsets[1]);
-//            xYOffsets[0]++;
-//            if( i == gameLogic.getMaxPlayers()/2-1){
-//               xYOffsets[0] = 0;
-//               xYOffsets[1]++;
-//            }
-//        }
-//        mainGridPane.add(startingPlayers, 0,0);
-        //movePlayer(null);
-        Image keyImage= new Image("smallKey.png");
-        ImageView iv = new ImageView();
-        //iv.scal
-        iv.setImage(keyImage);
-        mainGridPane.add(iv, gameLogic.getKey().getX(), gameLogic.getKey().getY());
+        if(!gameLogic.getKey().playerCarrying()) {
+            Image keyPic = new Image("smallKey.png");
+            keyDrawn = true;
+            keyImage.fitWidthProperty().bind(mainGridPane.widthProperty().divide(numColumns * gameLogic.getMaxPlayers()));
+            keyImage.fitHeightProperty().bind(mainGridPane.heightProperty().divide(numColumns * gameLogic.getMaxPlayers()));
+            keyImage.setImage(keyPic);
+            keyImage.translateXProperty().bind(mainGridPane.widthProperty().divide(numColumns * gameLogic.getMaxPlayers()));
+            System.out.println(gameLogic.getKey().getX() + " " + gameLogic.getKey().getY());
+            mainGridPane.add(keyImage, gameLogic.getKey().getX(), gameLogic.getKey().getY());
+        }
         //mainGridPane.add(drawKey(new Rectangle()), gameLogic.getKey().getX(),  gameLogic.getKey().getY());
         //movePlayer(null);
         
@@ -370,10 +366,16 @@ public class MainGameController {
             one.getCurrentRoom().playerExiting(one);
             gameLogic.playerMoves(one, 1, one.getY());
             gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
+            keyFound();
             doStuff();
         }
     }
-
+    void keyFound(){
+        if(gameLogic.getKey().playerCarrying() && keyDrawn){
+            mainGridPane.getChildren().remove(mainGridPane.getChildren().indexOf(keyImage));
+            keyDrawn = false;
+        }
+    }
     @FXML
     void moveLeft(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
@@ -384,12 +386,14 @@ public class MainGameController {
             one.getCurrentRoom().playerExiting(one);
             gameLogic.playerMoves(one, 0, one.getX());
             gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
+            keyFound();
             doStuff();
         }
     }
 
     @FXML
     void moveRight(ActionEvent event) {
+
         Player one = gameLogic.getPlayer(1);
         one.moveRight();
         boolean wasAllowed = gameLogic.checkMove(one);
@@ -398,6 +402,7 @@ public class MainGameController {
             one.getCurrentRoom().playerExiting(one);
             gameLogic.playerMoves(one, 0, one.getX());
             gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
+            keyFound();
             doStuff();
         }
     }
@@ -412,6 +417,7 @@ public class MainGameController {
             one.getCurrentRoom().playerExiting(one);
             gameLogic.playerMoves(one, 1, one.getY());
             gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
+            keyFound();
             doStuff();
         }
     }

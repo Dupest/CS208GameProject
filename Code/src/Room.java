@@ -50,26 +50,27 @@ public class Room {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
+        this.roomKey = null;
         this.x = x;
         this.y = y;
         this.roomRender = null;
         playersInside = new LinkedList<>();
     }
     //By Svetozar Draganitchki
-    public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey) {
+    public Room(boolean isLocked, int doorID, boolean isATrap, Key key) {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
-        this.roomKey = isKey;
+        this.roomKey = key;
         this.roomRender = null;
         playersInside = new LinkedList<>();
     }
     //By Svetozar Draganitchki
-    public Room(boolean isLocked, int doorID, boolean isATrap, Key isKey, int x, int y) {
+    public Room(boolean isLocked, int doorID, boolean isATrap, Key key, int x, int y) {
         this.isLocked = isLocked;
         this.doorID = doorID;
         this.isATrap = isATrap;
-        this.roomKey = isKey;
+        this.roomKey = key;
         this.x = x;
         this.y = y;
         this.roomRender = null;
@@ -198,6 +199,10 @@ public class Room {
                 isATrap = false;
             }
         }
+        if(roomKey != null){
+            roomKey.playerTakes(player);
+            setKey(null);
+        }
     }
     
     /**
@@ -221,6 +226,10 @@ public class Room {
         }
         roomKey = new Key();
 
+    }
+
+    private boolean hasKey(){
+        return getKey() != null;
     }
 
 

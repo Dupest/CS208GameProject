@@ -19,6 +19,7 @@ public class Tester extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GameProjectFXML.fxml"));
         Scene newScene = new Scene((VBox)loader.load());
+        //newScene.getStylesheets().add(Tester.class.getResource("maybe.css").toExternalForm());
         primaryStage.setScene(newScene);
         primaryStage.setTitle("CastleDelver");
         primaryStage.setHeight(900);
