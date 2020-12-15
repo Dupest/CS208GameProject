@@ -100,7 +100,6 @@ public class MainGameController<Vbox> {
         healthBarUpdaters = new ArrayList<>();
         //We can get them number of columns/rows by checking to see how many constraints there are. There will be a specific constraint object for each row/column
         gameLogic = new GameLogic(4);
-        setGridPaneUp();
         //setGridPaneUp();
         //Init arrays
         gridPaneNodes = new GridPane[numRows][numColumns];
@@ -108,7 +107,10 @@ public class MainGameController<Vbox> {
         //mapLayout = new Room[numRows][numColumns];
         //populateArray();
 
+    }
 
+    public void startUp(){
+        setGridPaneUp();
         gameLogic.mapInitializing(-1,-1);
         gameTimer = GAME_TIME;
         startTimer();
@@ -117,7 +119,6 @@ public class MainGameController<Vbox> {
         mainGridPane.heightProperty().addListener(evt -> doStuff());
         mainGridPane.widthProperty().addListener(evt -> doStuff());
         labelsPane.widthProperty().addListener((observableValue, oldWidth, newWidth) -> fontScaling.set(Font.font(newWidth.doubleValue() / 4)));
-
     }
 
     private void setUpPlayerGraphics(){
@@ -130,9 +131,9 @@ public class MainGameController<Vbox> {
             Player player = gameLogic.getPlayerList().get(i+1);
             Circle c = new Circle(radius, playerColors[i]);
             c.radiusProperty().bind(Bindings.min(mainGridPane.widthProperty(), mainGridPane.heightProperty()).divide(gameLogic.getGridRows()*gameLogic.getMaxPlayers()));
-            c.radiusProperty().addListener((obs, old , nw)-> {
-                System.out.println("old = " + old + " new: " + nw);
-            });
+//            c.radiusProperty().addListener((obs, old , nw)-> {
+//                System.out.println("old = " + old + " new: " + nw);
+//            });
             player.setPlayerRender(c);
             Label playerLabel = new Label("Player" + (i+1));
             ProgressBar playerHealthBar = new ProgressBar();
@@ -255,6 +256,7 @@ public class MainGameController<Vbox> {
             if(gameTimer < 15){
                 timerLabel.setTextFill(Color.RED);
             }
+            moveRandom();
         }));
         //timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(GAME_TIME+1);
@@ -371,21 +373,45 @@ public class MainGameController<Vbox> {
     void moveDown(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveForward();
-        move(one, 1);
+        move(one);
+    }
+    void moveRandom(){
+        int playerID = (int)(Math.random()*(gameLogic.getPlayerList().size()-1)+1);
+        System.out.println("ID:" + playerID);
+        //for(int i = 1; i <  gameLogic.getPlayerList().size(); i++){
+           Player player = gameLogic.getPlayerList().get(playerID);
+           int moveChoice = (int)(Math.random()*4);
+           System.out.println("Player:" + player.getHashKey() + " " + moveChoice);
+           switch(moveChoice){
+               case 0:
+                   player.moveBackward();
+                   break;
+               case 1:
+                   player.moveForward();
+                   break;
+               case 2:
+                   player.moveLeft();
+                   break;
+               case 3:
+                   player.moveRight();
+                   break;
+           }
+            move(player);
+        //}
     }
 
-    void move(Player one, int flag){
+    void move(Player player){
         boolean trapped;
-        boolean wasAllowed = gameLogic.checkMove(one);
-        System.out.println(one.getX() + " " +one.getY());
+        boolean wasAllowed = gameLogic.checkMove(player);
+        System.out.println(player.getX() + " " +player.getY());
         if (wasAllowed) {
-            one.getCurrentRoom().playerExiting(one);
-            trapped = gameLogic.playerMoves(one);
+            player.getCurrentRoom().playerExiting(player);
+            trapped = gameLogic.playerMoves(player);
             if(trapped){
-                System.out.println("Cell was trapped! Health left: " + one.getHealthPool());
-                healthBarUpdaters.get(one.getHashKey()-1).set(one.getHealthPool()/(double)Player.getDefaultHealth());
+                System.out.println("Cell was trapped! Health left: " + player.getHealthPool());
+                healthBarUpdaters.get(player.getHashKey()-1).set(player.getHealthPool()/(double)Player.getDefaultHealth());
             }
-            gridPaneNodes[one.getX()][one.getY()].add(one.getPlayerRender(), 0, 0);
+            gridPaneNodes[player.getX()][player.getY()].add(player.getPlayerRender(), 0, 0);
             keyFound();
             doStuff();
         }
@@ -400,7 +426,7 @@ public class MainGameController<Vbox> {
     void moveLeft(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveLeft();
-        move(one, 0);
+        move(one);
     }
 
     @FXML
@@ -408,14 +434,14 @@ public class MainGameController<Vbox> {
 
         Player one = gameLogic.getPlayer(1);
         one.moveRight();
-        move(one, 0);
+        move(one);
     }
 
     @FXML
     void moveUp(ActionEvent event) {
         Player one = gameLogic.getPlayer(1);
         one.moveBackward();
-        move(one, 1);
+        move(one);
     }
 
 

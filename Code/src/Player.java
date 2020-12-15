@@ -185,7 +185,7 @@ public class Player {
 
             return currentRoom == a.currentRoom
                     && this.healthPool== a.healthPool
-                    && this.key== a.key;
+                    && this.key== a.key && a.getHashKey() == this.getHashKey();
         }
         else
             return false;
