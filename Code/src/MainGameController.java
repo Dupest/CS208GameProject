@@ -1,16 +1,23 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 //Edited By Svetozar Draganitchki
 public class MainGameController {
@@ -26,6 +33,13 @@ public class MainGameController {
 
     @FXML
     private GridPane mainGridPane;
+
+    @FXML
+    private HBox buttonPane;
+
+    @FXML
+    private Label timerLabel;
+
 
     private Room[][]  mapLayout;
     private HashMap<Integer, Key> keyMap;
@@ -63,6 +77,25 @@ public class MainGameController {
         playerMap = new HashMap<>();
 
         mapInitializing();
+        long endTime = 60;
+        Label timeLabel = new Label();
+        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
+        final Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis( 500 ),
+                        event -> {
+                            final long diff = endTime - System.currentTimeMillis();
+                            if ( diff < 0 ) {
+                                //  timeLabel.setText( "00:00:00" );
+                                timeLabel.setText( timeFormat.format( 0 ) );
+                            } else {
+                                timeLabel.setText( timeFormat.format( diff ) );
+                            }
+                        }
+                )
+        );
+        timeline.setCycleCount( Animation.INDEFINITE );
+        timeline.play();
     }
     /*
     initializes the map depending on the size of the map and
