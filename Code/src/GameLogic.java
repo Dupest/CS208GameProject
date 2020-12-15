@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class GameLogic implements KeyListener{
     //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
-    private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
+    //private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
 
     private HashMap<Point2D, Room> roomList;
     private Key key;
@@ -29,8 +29,8 @@ public class GameLogic implements KeyListener{
 
     
     public GameLogic(){
-        mapLayout = new Room[9][9];
-        key = null;
+
+        roomList = new HashMap<>();
         playerList = new HashMap<Integer, Player> ();
         mapInitializing(-1, -1);
         maxPlayers = 4;
@@ -40,13 +40,12 @@ public class GameLogic implements KeyListener{
 
     public GameLogic(int maxPlayers) {
 
-        key = null;
         playerList = new HashMap<Integer, Player> ();
         mapInitializing(-1, -1);
         this.maxPlayers = maxPlayers;
         gridColumns = 9;
         gridRows = 9;
-        mapLayout = new Room[9][9];
+        roomList = new HashMap<>();
     }
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
         key = null;
@@ -55,11 +54,11 @@ public class GameLogic implements KeyListener{
         this.maxPlayers = maxPlayers;
         this.gridColumns = gridColumns;
         this.gridRows = gridRows;
-        mapLayout = new Room[gridRows][gridColumns];
+        playerList = new HashMap<Integer, Player> ();
     }
 
     public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
-        this.mapLayout = mapLayout;
+        playerList = new HashMap<Integer, Player> ();
         this.key = key;
         this.playerList = playerList;
         mapInitializing(-1, -1);
@@ -86,7 +85,6 @@ public class GameLogic implements KeyListener{
         } else {
             traps = 10;
         }
-        mapLayout = new Room[9][9];
 
         //loop initializes all rooms
 //        for(int i = 0; i < 81; i++){
@@ -126,7 +124,7 @@ public class GameLogic implements KeyListener{
         int y = rand.nextInt(7);
 
         //generates final key =
-        key = new Key(mapLayout[8][8], 1, x, y);
+        key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);
 
 
 
@@ -150,7 +148,7 @@ public class GameLogic implements KeyListener{
         method that checks if player can enter room
     */
     public boolean canEnter(int roomX, int roomY,Player p){
-        if(mapLayout[roomX][roomY].isLocked()){
+        if((roomList.get(new Point2D(roomX, roomY)).isLocked())){
             return hasKey(roomX, roomY, p);           //Simplified this logic - DO
         }
         return true;
@@ -164,7 +162,7 @@ public class GameLogic implements KeyListener{
         checks if a player has the matching key to a room
     */
     public boolean hasKey(int roomX, int roomY, Player p){
-        if(mapLayout[roomX][roomY].getDoorID() == p.getKey().getMyRoom().getDoorID()){
+        if((roomList.get(new Point2D(roomX, roomY)).getDoorID() == p.getKey().getMyRoom().getDoorID())){
             return true;
         } else {
             return false;
@@ -200,7 +198,7 @@ public class GameLogic implements KeyListener{
     }
     
     public Room getRoom(int x, int y){
-        return mapLayout[x][y];
+        return (roomList.get(new Point2D(x, y)));
     }
     
     @Override
@@ -256,12 +254,12 @@ public class GameLogic implements KeyListener{
         }
     }
 
-    public Room[][] getMapLayout() {
-        return mapLayout;
+    public HashMap<Point2D, Room> getRoomList() {
+        return roomList;
     }
 
-    public void setMapLayout(Room[][] mapLayout) {
-        this.mapLayout = mapLayout;
+    public void setRoomList(HashMap<Point2D, Room> roomList) {
+        this.roomList = roomList;
     }
 
     public void setKey(Key newKey){
