@@ -167,7 +167,7 @@ public class GameLogic{
         method that checks if player can enter room
     */
     public boolean canEnter(int roomX, int roomY,Player p){
-        if((roomList.get(new Point2D(roomX, roomY)).getIsLocked())){
+        if((roomList.get(new Point2D(roomX, roomY)).isLocked())){
             return hasKey(roomX, roomY, p);           //Simplified this logic - DO
         }
         return true;
