@@ -190,7 +190,7 @@ public class Room {
         playersInside.add(player);
         Random rand = new Random();
         //Math.random() * (max-min+1) + min   - Will return in range
-        int damageTaken = rand.nextInt(5);
+        int damageTaken = rand.nextInt(9);
         if(isATrap){
             if(damageTaken == 0){ //check prevents the damage taken not to be less than 1
                 player.setHealthPool((player.getHealthPool() - 1));
@@ -198,6 +198,10 @@ public class Room {
             } else {
                 player.setHealthPool((player.getHealthPool() - damageTaken));
                 isATrap = false;
+            }
+
+            if(player.getHealthPool() < 0){
+                player.playerDead();
             }
         }
         if(roomKey != null){

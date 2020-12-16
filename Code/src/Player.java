@@ -67,9 +67,8 @@ public class Player {
     }
 
     public void playerDead(){
-        if(healthPool <= 0){
-            currentRoom = null;
-        }
+        currentRoom = null;
+
     }
 
     //old methods that were moved into the room class
@@ -114,11 +113,11 @@ public class Player {
         x--;
     }
     
-    public void moveForward(){
+    public void moveDown(){
         y++;
     }
     
-    public void moveBackward(){
+    public void moveUp(){
         y--;
     }
     

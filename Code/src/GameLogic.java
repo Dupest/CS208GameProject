@@ -25,7 +25,8 @@ public class GameLogic{
     private int maxPlayers;
     private int gridRows;
     private int gridColumns;
-    private static final int trapChance = 10;
+    private static final int trapChance = 60;
+    private static final int numTraps = 20;
 
     
     public GameLogic(){
@@ -80,12 +81,12 @@ public class GameLogic{
         int roomNumber = 1;
 
         //traps is max number of traps
-        int traps;
-        if(trappedRooms > -1){
-            traps = trappedRooms;
-        } else {
-            traps = 10;
-        }
+        int traps = 0;
+//        if(trappedRooms > -1){
+//            traps = trappedRooms;
+//        } else {
+//            traps = 10;
+//        }
 
         //loop initializes all rooms
 //        for(int i = 0; i < 81; i++){
@@ -105,10 +106,10 @@ public class GameLogic{
         {
             for(int x = 0 ; x < 9; x++)
             {
-                if(rand.nextInt(100) <= trapChance && traps >= 0){
+                if(rand.nextInt(100) <= trapChance && traps <= numTraps){
                     //System.out.println("Set Trap!");
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
-                    traps --;
+                    traps++;
                     roomNumber++;
                 } else if (x == 8 && y == 8){
                     roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
@@ -204,6 +205,9 @@ public class GameLogic{
      * @param p is the player referenced
      */
     public boolean checkMove(Player p){
+        if(p.getHealthPool() < 0){
+            return false;
+        }
         boolean fairMove = true;
         int x = p.getX();
 
@@ -223,7 +227,7 @@ public class GameLogic{
             p.setY(gridRows-1);
             fairMove = false;
         }
-        System.out.println(p.getKey() == null);
+        //System.out.println(p.getKey() == null);
         return fairMove;
     }
     
