@@ -15,19 +15,34 @@ import java.util.Random;
  *  By Svetozar Draganitchki
  * 
  */
-public class GameLogic implements KeyListener{
+public class GameLogic{
     //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
     //private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
 
+    //private hashMap for roomList
     private HashMap<Point2D, Room> roomList;
+    
+    //private key
     private Key key;
+    
+    //private hashMap to keep track of playerList
     private HashMap<Integer, Player> playerList;
+    
+    //private int variable to keep track of the maximum players
     private int maxPlayers;
+    
+    //private int all the grid rows
     private int gridRows;
+    
+    //private int all the grid columns
     private int gridColumns;
+    
+    //private int the percentage chance of a trap occuring
     private static final int trapChance = 10;
 
-    
+    /*
+        Default constructor
+    */
     public GameLogic(){
         roomList = new HashMap<>();
         playerList = new HashMap<>();
@@ -37,6 +52,9 @@ public class GameLogic implements KeyListener{
         gridRows = 9;
     }
 
+    /*
+        Construcotr that takes the maximum amount of players
+    */
     public GameLogic(int maxPlayers) {
         roomList = new HashMap<>();
         playerList = new HashMap<Integer, Player> ();
@@ -46,6 +64,9 @@ public class GameLogic implements KeyListener{
         gridRows = 9;
     }
 
+    /*
+        Construcotr that takes the maximum amount of players, the columns and rows as intergere values.
+    */
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
         key = null;
         playerList = new HashMap<Integer, Player> ();
@@ -57,6 +78,9 @@ public class GameLogic implements KeyListener{
     }
 
 
+    /*
+        Construcotr that takes the maximum amount of players, a key, and the players Hashmap.
+    */
     public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
         playerList = new HashMap<Integer, Player> ();
         roomList = new HashMap<>();
@@ -76,7 +100,7 @@ public class GameLogic implements KeyListener{
     public void mapInitializing(int players, int trappedRooms){
         //method assumes the map generated is a 9 x 9
         Random rand = new Random();
-
+        // int to intialize the number value
         int roomNumber = 1;
 
         //traps is max number of traps
@@ -86,124 +110,83 @@ public class GameLogic implements KeyListener{
         } else {
             traps = 10;
         }
-
-        //loop initializes all rooms
-//        for(int i = 0; i < 81; i++){
-//            if(rand.nextInt(101) < 50 || traps >= 0){
-//                traps--;
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }else if(roomNumber == 81){
-//                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//            } else {
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }
-//        }
-        //loop initializes all rooms
+        //Nested for loop that generates rooms and stores them into room
         for(int y = 0 ; y < 9; y++)
         {
             for(int x = 0 ; x < 9; x++)
             {
-                if(rand.nextInt(100) <= trapChance && traps >= 0){
-                    //System.out.println("Set Trap!");
+                if(rand.nextInt(100) <= trapChance && traps >= 0){ //generates traps based on trapchance of occuring
+                    //puts rooms into a hashmap of roomlist and generates the code key based on room location
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
                     traps --;
                     roomNumber++;
                 } else if (x == 8 && y == 8){
+                    //creates the final room
                     roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
+                    roomList.get(new Point2D(x, y)).setFinal(true);
+                    System.out.println(roomList.get(new Point2D(x, y)).isATrap());
                     roomNumber++;
                 }
                 else
                 {
+                    //puts rooms into a room
                     roomList.put(new Point2D(x, y), new Room(false, roomNumber, false, x, y));
                     roomNumber++;
                 }
             }
         }
-
-        int x = rand.nextInt(8);
-        int y = rand.nextInt(7);
-
-        //generates final key =
-        key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);
-        roomList.get(new Point2D(Math.floor(Math.random()*gridRows), Math.floor(Math.random()*gridColumns)));
-
-
-
-
-        //generates the number of players specified by the variable players
-        //generates the players at the top right of the map
+        //methods to help take the burden off of mapInitializing
+        generateFinalKey(rand.nextInt(8), rand.nextInt(7));
+        generatePlayers(players);  
+    }
+    /*generates the number of players specified by the variable players
+      generates the players at the top right of the map
+    */
+    private void generatePlayers(int players){
         if(players == -1){
             for(int i = 0; i < 4; i++){
-                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
-                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0, i+1));
+                roomList.get(new Point2D(0, 0)).playerEntry(playerList.get(i+1));
             }
         }
         else{
             for(int i = 0; i < players; i++){
-                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0));
-                roomList.get(new Point2D(0, 0)).playerEntry(i+1, playerList.get(i+1));
+                playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0, i+1));
+                roomList.get(new Point2D(0, 0)).playerEntry(playerList.get(i+1));
             }
         }
-
     }
-    public void simulate(){
-        
+    
+    //method to generate finalKey
+    private void generateFinalKey(int x, int y){
+       key = new Key(roomList.get(new Point2D(8,8)), 1, x, y);
+       roomList.get(new Point2D(x,y)).setKey(key);
     }
+    
     /*
-        By Svetozar Draganitchki
         method that checks if player can enter room
     */
     public boolean canEnter(int roomX, int roomY,Player p){
-        if((roomList.get(new Point2D(roomX, roomY)).isLocked())){
+        if((roomList.get(new Point2D(roomX, roomY)).getIsLocked())){
             return hasKey(roomX, roomY, p);           //Simplified this logic - DO
         }
         return true;
     }
     /*
-        playerMoves depeding on flag and point parameters
-        @param int flag the forward and reverse direction
-        @param int point the left and right direction
+        updates the Room of the player based on player location
+        @param player 
     */
-    public void playerMoves(Player player,int flag, int point){             //Point = 1 or -1
-        //We assume point == y
-        if(flag > 0){
-            int curY = player.getCurrentRoom().getY();
-            Room newRoom = roomList.get(new Point2D(player.getCurrentRoom().getX(), curY+point));
+    public boolean playerMoves(Player player){             //Point = 1 or -1
+        boolean trap;
+        
+        Room newRoom = roomList.get(new Point2D(player.getX(), player.getY()));
 
-            //TODO: Fix issue with rehashing players
-            //newRoom.playersInside.put(player., player)
-            player.setCurrentRoom(newRoom);   //
-        }
-        //We assume point == x
-        else{
-            int curX = player.getCurrentRoom().getX();
-            Room newRoom = roomList.get(new Point2D(curX+point , player.getCurrentRoom().getY()));
-
-            //TODO: Fix issue with rehashing players
-            //newRoom.playersInside.put(player., player)
-            player.setCurrentRoom(newRoom);   //
-        }
-//        if(flag > 0)
-//        {
-//            if(point > 0){
-//                player.setCurrentRoom()     //.setX(player.getCurrentRoom().getX()+1);
-//            }else{
-//                player.setCurrentRoom().setX(player.getCurrentRoom().getX()-1);
-//            }
-//
-//        }else{
-//            if(point > 0){
-//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()+1);
-//            }else{
-//                player.setCurrentRoom().setY(player.getCurrentRoom().getY()-1);
-//            }
-//        }
+        trap = newRoom.playerEntry(player);
+        player.setCurrentRoom(newRoom);
+        return trap;
     }
     
-    /**
-        By Svetozar Draganitchki
+    /*
         checks if a player has the matching key to a room
     */
     public boolean hasKey(int roomX, int roomY, Player p){
@@ -217,134 +200,129 @@ public class GameLogic implements KeyListener{
     /**
      * checks that a player has not gone out of bounds
      * @param p is the player referenced
+     * returns false if player is outside of bounds and true if player is inside
      */
-    public void EnteredRoom(Player p){
+    public boolean checkMove(Player p){
+        boolean fairMove = true;
         int x = p.getX();
+
         int y = p.getY();
         if(x < 0){
             p.setX(0);
-        } else if (x > gridColumns){
-            p.setX(gridColumns);
+            fairMove = false;
+        } else if (x >= gridColumns){
+            p.setX(gridColumns-1);
+            fairMove = false;
         }
 
         if(y < 0){
             p.setY(0);
-        } else if(y > gridRows){
-            p.setY(gridRows);
+            fairMove = false;
+        } else if(y >= gridRows){
+            p.setY(gridRows-1);
+            fairMove = false;
         }
+        System.out.println(p.getKey() == null);
+        return fairMove;
     }
     
+    //Gettters and Setters
+    
+    //returns key 
+     public Key getKey(){
+        return key;
+    }
+    //returns the hashmap of Room object called roomList
+    public HashMap<Point2D, Room> getRoomList() {
+        return roomList;
+    }
+    
+    //returns the hashmap of Room object called roomList
+    public HashMap<Integer, Player> getPlayerList() {
+        return playerList;
+    }
+    
+    //returns maximumplayers
+    public int getMaxPlayers(){
+        return maxPlayers;
+    }
+    
+    //returns gridRows
+    public int getGridRows(){
+        return gridRows;
+    }
+    
+    //returns gridColumns
+    public int getGridColumns(){
+        return gridColumns;
+    }
+    
+    //returns the player from the Hashmap of players
     public Player getPlayer(int playerID){
         return playerList.get(playerID);
     }
     
-    public Key getKey(){
-        return key;
-    }
-
+   //returns the room  from the Hashmap of rooms
     public Room getRoom(int x, int y){
         return (roomList.get(new Point2D(x, y)));
     }
-    
-    @Override
-    public void keyTyped(KeyEvent e) {
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||
-            e.getKeyCode() == KeyEvent.VK_D) {
-            System.out.println("Right key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT ||
-            e.getKeyCode() == KeyEvent.VK_A) {
-            System.out.println("Left key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||
-            e.getKeyCode() == KeyEvent.VK_W) {
-            System.out.println("Up key pressed");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||
-            e.getKeyCode() == KeyEvent.VK_S) {
-            System.out.println("Down key pressed");
-            
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT ||
-            e.getKeyCode() == KeyEvent.VK_D) {
-            System.out.println("Right key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT ||
-            e.getKeyCode() == KeyEvent.VK_A) {
-            System.out.println("Left key Released");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_UP ||
-            e.getKeyCode() == KeyEvent.VK_W) {
-            System.out.println("Up key pressed");
-            
-        }
-        if (e.getKeyCode() == KeyEvent.VK_KP_DOWN ||
-            e.getKeyCode() == KeyEvent.VK_S) {
-            System.out.println("Down key pressed");
-            
-        }
-    }
-
-    public HashMap<Point2D, Room> getRoomList() {
-        return roomList;
-    }
-
-    public void setRoomList(HashMap<Point2D, Room> roomList) {
-        this.roomList = roomList;
-    }
-
+    //set key value
     public void setKey(Key newKey){
         key = newKey;
     }
-
-
-    public HashMap<Integer, Player> getPlayerList() {
-        return playerList;
+    
+    //sets a hashmap of new rooms to roomList
+    public void setRoomList(HashMap<Point2D, Room> roomList) {
+        this.roomList = roomList;
     }
-
+    
+    //sets a hashmap of new players to playerList
     public void setPlayerList(HashMap<Integer, Player> playerList) {
         this.playerList = playerList;
     }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
+    //sets the maximum amount of players
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
 
-    public static int getTrapChance() {
-        return trapChance;
-    }
-
-    public int getGridRows() {
-        return gridRows;
-    }
-
+    //sets the gridRows
     public void setGridRows(int gridRows) {
         this.gridRows = gridRows;
     }
 
-    public int getGridColumns() {
-        return gridColumns;
-    }
-
+    //sets the gridColumns 
     public void setGridColumns(int gridColumns) {
         this.gridColumns = gridColumns;
+    }
+    
+    public String toString() {
+        return "\nRooms List:" + roomList +
+                "\nPlayer List: " + playerList +
+                "\nKey: " + key +
+                "\nMaximumPlayers: " + maxPlayers +
+                "\nGrid Row Count: " + gridRows +
+                "\nGrid Column Count: " + gridColumns;
+    }
+    
+     @Override
+    public boolean equals(Object obj){
+        if (obj == this) return true;
+
+        if (obj == null) return false;
+
+        if (this.getClass() == obj.getClass()){
+            GameLogic a = (GameLogic) obj;
+
+            return roomList == a.roomList
+                    && this.playerList== a.playerList
+                    && this.key== a.key
+                    && this.maxPlayers== a.maxPlayers
+                    && this.gridRows== a.gridRows
+                    && this.gridColumns== a.gridColumns;
+        }
+        else
+            return false;
     }
 }
