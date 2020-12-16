@@ -198,7 +198,7 @@ public class Player {
        ToString method to return the health of the player and the key
     */
     public String toString() {
-        return "Player Health:" + healthPool + "Key " + key;
+        return "Player " + playerID;
     }
     
      @Override

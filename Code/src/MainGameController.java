@@ -15,9 +15,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -87,6 +85,8 @@ public class MainGameController<Vbox> {
     private int numColumns;
     private int numRows;
 
+    private Timeline timeline;
+
 
 
     /**
@@ -125,7 +125,7 @@ public class MainGameController<Vbox> {
         deathStatus = new boolean[gameLogic.getMaxPlayers()];
         Arrays.fill(deathStatus, Boolean.FALSE);
         gameTimer = GAME_TIME;
-        startTimer();
+        timeline = startTimer();
         setUpPlayerGraphics();
 
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
@@ -294,7 +294,7 @@ public class MainGameController<Vbox> {
         }
     }
 
-    private void startTimer(){
+    private Timeline startTimer(){
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
             timerLabel.setText("Time Left: " + Integer.toString(gameTimer));
@@ -308,6 +308,11 @@ public class MainGameController<Vbox> {
         //timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(GAME_TIME+1);
         timeline.play();
+        return timeline;
+    }
+
+    private void stopTimer(){
+        timeline.stop();
     }
     private void populateArray(){
         for (Node child : mainGridPane.getChildren()) {
@@ -404,9 +409,9 @@ public class MainGameController<Vbox> {
     @FXML
     void moveDown(ActionEvent event) {
         if(controlPlayerOne) {
-            Player one = gameLogic.getPlayer(1);
-            one.moveDown();
-            move(one);
+            Player player = gameLogic.getPlayer(1);
+            int old = player.moveDown();
+            move(player, 1, old);
         }
     }
     void moveRandom(){
@@ -422,28 +427,34 @@ public class MainGameController<Vbox> {
 //               return;
 //           }
            int moveChoice = (int)(Math.random()*4);
+           int flag =-1;
+           int old = -1;
            //System.out.println("Player:" + player.getHashKey() + " " + moveChoice);
            switch(moveChoice){
                case 0:
-                   player.moveUp();
+                   old = player.moveUp();
+                   flag = 1;
                    break;
                case 1:
-                   player.moveDown();
+                   old = player.moveDown();
+                   flag = 1;
                    break;
                case 2:
-                   player.moveLeft();
+                   old = player.moveLeft();
+                   flag = 0;
                    break;
                case 3:
-                   player.moveRight();
+                   old = player.moveRight();
+                   flag = 0;
                    break;
            }
-            move(player);
+            move(player, flag, old);
         //}
     }
 
-    void move(Player player){
+    void move(Player player, int flag, int oldPoint){
         boolean trapped;
-        boolean wasAllowed = gameLogic.checkMove(player);
+        boolean wasAllowed = gameLogic.checkMove(player, flag, oldPoint);
         //System.out.println(player.getX() + " " +player.getY());
         if (wasAllowed) {
             player.getCurrentRoom().playerExiting(player);
@@ -455,6 +466,12 @@ public class MainGameController<Vbox> {
             gridPaneNodes[player.getX()][player.getY()].add(player.getPlayerRender(), 0, 0);
             keyFound();
             resizeMap();
+            if(player.getCurrentRoom().getClass() == FinalRoom.class) {
+                stopTimer();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, player.toString() + " wins!", ButtonType.OK);
+                alert.showAndWait();
+                System.exit(0);
+            }
         }
     }
     void keyFound(){
@@ -467,8 +484,8 @@ public class MainGameController<Vbox> {
     void moveLeft(ActionEvent event) {
         if(controlPlayerOne) {
             Player one = gameLogic.getPlayer(1);
-            one.moveLeft();
-            move(one);
+            int old = one.moveLeft();
+            move(one, 0, old);
         }
     }
 
@@ -476,8 +493,8 @@ public class MainGameController<Vbox> {
     void moveRight(ActionEvent event) {
         if(controlPlayerOne) {
             Player one = gameLogic.getPlayer(1);
-            one.moveRight();
-            move(one);
+            int old = one.moveRight();
+            move(one,0,old);
         }
     }
 
@@ -485,8 +502,8 @@ public class MainGameController<Vbox> {
     void moveUp(ActionEvent event) {
         if(controlPlayerOne) {
             Player one = gameLogic.getPlayer(1);
-            one.moveUp();
-            move(one);
+            int old = one.moveUp();
+            move(one, 1, old);
         }
     }
     @FXML
@@ -496,4 +513,7 @@ public class MainGameController<Vbox> {
     }
 
 
+    public void quit(ActionEvent actionEvent) {
+        System.exit(0);
+    }
 }

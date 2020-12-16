@@ -195,12 +195,7 @@ public class GameLogic{
      * checks that a player has not gone out of bounds
      * @param p is the player referenced
      */
-    public boolean checkMove(Player p){
-        System.out.println(p.getCurrentRoom().getClass().getName());
-        if(p.getHealthPool() < 0 || (p.getCurrentRoom().getClass() == FinalRoom.class && p.getKey() == null)){
-
-            return false;
-        }
+    public boolean checkMove(Player p, int flag, int oldPoint){
         boolean fairMove = true;
         int x = p.getX();
 
@@ -220,6 +215,19 @@ public class GameLogic{
             p.setY(gridRows-1);
             fairMove = false;
         }
+        System.out.println(p.getCurrentRoom().getClass().getName());
+//        if(-1 < p.getY() > 9 && -1 < p.getX() > 9)
+        Room roomToMove = (roomList.get(new Point2D(p.getX(), p.getY())));
+        if(p.getHealthPool() < 0 || roomToMove.getClass() == FinalRoom.class && p.getKey() == null){
+            if(flag == 0){
+                p.setX(oldPoint);
+            }
+            if(flag == 1){
+                p.setY(oldPoint);
+            }
+            return false;
+        }
+
         //System.out.println(p.getKey() == null);
         return fairMove;
     }
