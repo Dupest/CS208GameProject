@@ -174,7 +174,7 @@ public class Room {
     //Getter and setter methods for fields
     
     //returns the room locked option
-    public boolean getIsLocked() {
+    public boolean isLocked() {
         return isLocked;
     }
     //returns the doorID

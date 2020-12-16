@@ -93,7 +93,24 @@ public class MainGameController<Vbox> {
     /**
      * This runs first whenever application tester calls Loader.load() so it acts as the driver code for our JavaFX project
      */
+
+    @FXML
+
+    void init(ActionEvent e){
+        cleanUp();
+        startUp();
+    }
     public void initialize() {
+
+        //mapLayout = new Room[numRows][numColumns];
+        //populateArray();
+
+    }
+    public void cleanUp(){
+        labelsPane.getChildren().clear();
+        labelsPane.getChildren().add(timerLabel);
+    }
+    public void startUp(){
         numColumns = 9;
         numRows = 9;
         keyDrawn = false;
@@ -106,12 +123,6 @@ public class MainGameController<Vbox> {
         //Init arrays
         gridPaneNodes = new GridPane[numRows][numColumns];
         canvases = new Node[numRows][numColumns];
-        //mapLayout = new Room[numRows][numColumns];
-        //populateArray();
-
-    }
-
-    public void startUp(){
         setGridPaneUp();
         gameLogic.mapInitializing(-1,-1);
         deathStatus = new boolean[gameLogic.getMaxPlayers()];
@@ -119,6 +130,7 @@ public class MainGameController<Vbox> {
         gameTimer = GAME_TIME;
         startTimer();
         setUpPlayerGraphics();
+
         //We bind a listener to the size of the window to allow things to resize smoothly. resizing calls doStuff()
         mainGridPane.heightProperty().addListener(evt -> resizeMap());
         mainGridPane.widthProperty().addListener(evt -> resizeMap());
@@ -209,9 +221,13 @@ public class MainGameController<Vbox> {
         mainGridPane.getChildren().add(0, node);
         GraphicsContext gc;
         Canvas newMapImage;
+        boolean finalRoom = false;
         //For each node within the gridpane draw a square representing a room.
         for (int i = 0; i < numRows; i++) {
             for (int k = 0; k < numColumns; k++) {
+                if(i == numRows-1 && k == numColumns-1){
+                    finalRoom = true;
+                }
                 Room currRoom = gameLogic.getRoom(i, k);
                 //Think there's a better way to do this, but default behavior each gridpane node gets a percent of the screen X based on number of children C (size = X/C)
                 newMapImage = new Canvas(winWidth / numColumns, winHeight / numRows);
@@ -222,7 +238,7 @@ public class MainGameController<Vbox> {
                 Rectangle newRect = new Rectangle
                         (newMapImage.getWidth() / 2.0, newMapImage.getHeight() / 2.0, newMapImage.getWidth() - PADDING, newMapImage.getHeight() - PADDING);
                 gameLogic.getRoomList().get(new Point2D(i, k)).setRoomRender(newRect);
-                drawRectangle(gc, newRect, currRoom.isATrap());
+                drawRectangle(gc, newRect, currRoom.isATrap(), finalRoom);
                 Group newGroup = new Group();
                 newGroup.getChildren().add(newMapImage);
                 mainGridPane.add(newGroup, i, k);
@@ -337,10 +353,13 @@ public class MainGameController<Vbox> {
         resizeMap();
     }
 
-    private void drawRectangle(GraphicsContext gc,Rectangle rect, boolean isTrap){
+    private void drawRectangle(GraphicsContext gc,Rectangle rect, boolean isTrap, boolean isFinal){
         gc.setFill(Color.DARKGREY);
         if(isTrap){
             gc.setFill(Color.RED);
+        }
+        if(isFinal){
+            gc.setFill(Color.DARKGREEN);
         }
         gc.fillRect(rect.getX()-rect.getWidth()/2.0,
                 rect.getY()-rect.getHeight()/2.0,
