@@ -102,9 +102,6 @@ public class MainGameController<Vbox> {
     }
     public void initialize() {
 
-        //mapLayout = new Room[numRows][numColumns];
-        //populateArray();
-
     }
     public void cleanUp(){
         labelsPane.getChildren().clear();

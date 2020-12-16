@@ -22,11 +22,11 @@ public class Tester extends Application {
         Scene newScene = new Scene((VBox)loader.load());
         MainGameController gameController = (MainGameController)loader.getController();
         //newScene.getStylesheets().add(Tester.class.getResource("maybe.css").toExternalForm());
-        gameController.startUp();
         primaryStage.setScene(newScene);
         primaryStage.setTitle("CastleDelver");
         primaryStage.setHeight(900);
         primaryStage.setWidth(1600);
+        gameController.startUp();
         primaryStage.show();
 
 
