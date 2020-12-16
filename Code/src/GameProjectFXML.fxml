@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -20,21 +20,8 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
+                  <CheckMenuItem mnemonicParsing="false" onAction="#togglePlayerControl" text="Control Player One" />
             <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -44,7 +31,7 @@
         </Menu>
       </menus>
     </MenuBar>
-      <BorderPane>
+      <BorderPane fx:id="mainPane">
          <center>
           <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" BorderPane.alignment="CENTER">
                <children>
@@ -88,19 +75,19 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move Up" GridPane.columnIndex="1" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move Left" GridPane.rowIndex="1" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move Right" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Move Down" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button fx:id="upButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveUp" text="Move Up" GridPane.columnIndex="1" />
+                  <Button fx:id="leftButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveLeft" text="Move Left" GridPane.rowIndex="1" />
+                  <Button fx:id="rightButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveRight" text="Move Right" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Button fx:id="downButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveDown" text="Move Down" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </bottom>
          <left>
-            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <VBox fx:id="labelsPane" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="timerLabel" alignment="CENTER" text="Time Passed:" VBox.vgrow="ALWAYS">
+                  <Label fx:id="timerLabel" alignment="CENTER" text="Time Passed:" wrapText="true" VBox.vgrow="ALWAYS">
                      <font>
-                        <Font size="16.0" />
+                        <Font size="30.0" />
                      </font>
                   </Label>
                </children>

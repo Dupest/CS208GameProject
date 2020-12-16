@@ -18,7 +18,11 @@ public class Tester extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GameProjectFXML.fxml"));
+        //Now we have access to getController() through the instance... don't forget the type cast
         Scene newScene = new Scene((VBox)loader.load());
+        MainGameController gameController = (MainGameController)loader.getController();
+        //newScene.getStylesheets().add(Tester.class.getResource("maybe.css").toExternalForm());
+        gameController.startUp();
         primaryStage.setScene(newScene);
         primaryStage.setTitle("CastleDelver");
         primaryStage.setHeight(900);
