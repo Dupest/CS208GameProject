@@ -26,8 +26,8 @@ public class Tester extends Application {
         primaryStage.setTitle("CastleDelver");
         primaryStage.setHeight(900);
         primaryStage.setWidth(1600);
-        gameController.startUp();
         primaryStage.show();
+        gameController.startUp();
 
 
     }

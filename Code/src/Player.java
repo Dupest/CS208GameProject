@@ -1,7 +1,13 @@
 import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
+/*
+    Player's hashcode utilizes built in Integer.hashcode() and passed its doorID (Of which will always be a unique incrementing int value. It's a disgustingly simple
+    hashing setup, because we can guarantee a unique bucket for each room. This makes collisions a non-issue, and outside of potentially going over load-factor,
+    we keep rehashing to a minimum.
+
+    - Darragh O'Halloran
+ */
 
 //Edited By Svetozar Draganitchki
 public class Player {
@@ -12,17 +18,10 @@ public class Player {
     //default health of the player if the constructor without the health parameter is used
     private static final int DEFAULT_HEALTH = 15;
 
-    //TODO: Pick one of these two
-  //  private ArrayList<Key> keyList;
-
-    //The list of keys a player would have on them after collection
+    //Space for the game winning key if the player picks it up
     private Key key;
-    //private int numKeys;
 
-    /**reference to the current room a player is in
-     * if set to null, the player is out of the game
-     * or is not playing the game
-     */
+    //Reference to currentRoom, or null in the case of death
     private Room currentRoom;
 
     //the current health of the player
@@ -31,15 +30,18 @@ public class Player {
     //variables to keep track of player location
     private int x,y;
 
-    private int hashKey;
+    private int playerID;
 
-    //main constructors
+    //No args Constructor
     public Player(){
         healthPool = DEFAULT_HEALTH;
         key = null;
         currentRoom = null;
     }
-
+    /**
+     *
+     * @param room  player's current room
+     */
     public Player(Room room){
         healthPool = DEFAULT_HEALTH;
         key = null;
@@ -47,7 +49,11 @@ public class Player {
     }
 
 
-    //By Svetozar Draganitchki
+    /**
+     *
+     * @param x     player's x
+     * @param y     player's y
+     */
     public Player(int x,int y){
         healthPool = DEFAULT_HEALTH;
         key = null;
@@ -56,39 +62,43 @@ public class Player {
         this.y = y;
     }
 
-    public Player(Room room, int x,int y, int hashKey){
+    /**
+     *
+     * @param room  player's current room
+     * @param x     player's x
+     * @param y     player's y
+     * @param id   player's ID
+     */
+    public Player(Room room, int x,int y, int id){
         healthPool = DEFAULT_HEALTH;
         key = null;
         currentRoom = room;
         this.x = x;
         this.y = y;
-        this.hashKey = hashKey;
+        this.playerID = id;
         playerRender = new Circle();
     }
 
+
+    /**
+     * Called when the player dies, deals with the organizational points of removing the player, as well as
+     * re-placing the key if the player was carrying it.
+     */
     public void playerDead(){
+        if(key != null){
+            currentRoom.setKey(key);
+            key.setKeyID(-1);
+            key.setX(x);
+            key.setY(y);
+            setKey(null);
+        }
         currentRoom = null;
 
     }
 
-    //old methods that were moved into the room class
     /*
-     *if a trap is triggered, by default, damage taken is one
+        Getters and Setters
      */
-    /*public void trapTriggered(){
-        healthPool--;
-    }*/
-
-    /*
-     * Overloaded method does the same thing as the default method
-     * but, it allows the damage taken to be set
-     */
-    /*public void trapTriggered(int damage){
-        healthPool -= damage;
-    }*/
-
-
-    //getters and setters of the class
     public int getHealthPool(){
         return healthPool;
     }
@@ -144,10 +154,18 @@ public class Player {
         key = newKey;
     }
 
+    /**
+     *
+     * @return this player's key
+     */
     public Key getKey(){
         return key;
     }
 
+    /**
+     *
+     * @return this player's current room
+     */
     public Room getCurrentRoom() {
         return currentRoom;
     }
@@ -156,12 +174,12 @@ public class Player {
         this.currentRoom = currentRoom;
     }
 
-    public int getHashKey() {
-        return hashKey;
-    }
-
-    public void setHashKey(int hashKey) {
-        this.hashKey = hashKey;
+    /**
+     *
+     * @return ID # corresponding to this player
+     */
+    public int getPlayerID() {
+        return playerID;
     }
 
     @Override
@@ -184,13 +202,20 @@ public class Player {
 
             return currentRoom == a.currentRoom
                     && this.healthPool== a.healthPool
-                    && this.key== a.key && a.getHashKey() == this.getHashKey();
+                    && this.key== a.key && a.getPlayerID() == this.getPlayerID();
         }
         else
             return false;
     }
 
-
+    /**
+     * Darragh O'Halloran
+     * @return object's hashcode
+     */
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(playerID);
+    }
 }
 
 

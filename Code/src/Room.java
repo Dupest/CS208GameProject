@@ -2,6 +2,13 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.*;
 /*
+    Room's hashcode utilizes built in Integer.hashcode() and passed its doorID (Of which will always be a unique incrementing int value. It's a disgustingly simple
+    hashing setup, because we can guarantee a unique bucket for each room. This makes collisions a non-issue, and outside of potentially going over load-factor,
+    we keep rehashing to a minimum.
+
+    - Darragh O'Halloran
+
+
     Edited By Svetozar Draganitchki
 */
 public class Room {
@@ -12,27 +19,25 @@ public class Room {
     //the ID of the door
     private int doorID;
 
-    //field to determine if a room is trapped and a player will take damage
+    //field to determine if a room is trapped
     private boolean isATrap;
 
     //Object to render the room in the UI
     private Rectangle roomRender;
 
-    //a hashmap to contain all of the players inside a room
-    //HashMap<Integer, Player> playersInside = new HashMap<>();
+    //LinkedList of player references within the room
     LinkedList<Player> playersInside;
 
-    //reference to the key that unlocks the room
+    //reference to the key that unlocks this room (or null)
     private Key roomKey;
 
-    //coordinates of the room in the map starting at (0,0)
+    //coordinates of the room in the map (0,0) is top left
     private int x,y;
-    
-    //used to keep track of last room or game winning room
-    private boolean isFinalRoom;
 
 
-    //Default Constructor
+    /**
+     * No args constructor
+     */
     public Room(){
         this.isLocked = false;
         this.doorID = -1;
@@ -41,10 +46,10 @@ public class Room {
         this.roomRender = null;
         playersInside = new LinkedList<>();
     }
-    /*
-        Constructor with three parameters
-        @boolean isLocked to checkif room is locked
-        @int doorID to check if the id of the door
+    /**
+        Generic room creation without x/y coord's involved
+        @boolean whether or not room is locked
+        @int doorID hashID of the door;
         @boolean isATrap to check if door has a trap
     */
     public Room(boolean isLocked, int doorID, boolean isATrap) {
@@ -55,12 +60,13 @@ public class Room {
         playersInside = new LinkedList<>();
     }
     
-     /*
+     /**
+      * Generic room creation without x/y coord's involved that contains a key.
         Constructor with four parameters
-        @boolean isLocked to checkif room is locked
-        @int doorID to check if the id of the door
+        @boolean whether or not room is locked
+        @int doorID hashID of the door;
         @boolean isATrap to check if door has a trap
-        @Key key to have a refrence to key value
+        @Key key A key to place in the room for players to rush to
     */
     public Room(boolean isLocked, int doorID, boolean isATrap, Key key) {
         this.isLocked = isLocked;
@@ -71,13 +77,13 @@ public class Room {
         playersInside = new LinkedList<>();
     }
     
-    /*
-        Constructor with five parameters
-        @boolean isLocked to checkif room is locked
-        @int doorID to check if the id of the door
-        @boolean isATrap to check if door has a trap
-        @int x to setup room at grid location
-        @int y to setup room at grid location
+    /**
+        Creates a room object at the specified coordinates.
+         @boolean whether or not room is locked
+         @int doorID hashID of the door;
+         @boolean isATrap to check if door has a trap
+         @int x to setup room at grid location
+         @int y to setup room at grid location
     */
     public Room(boolean isLocked, int doorID, boolean isATrap, int x, int y) {
         this.isLocked = isLocked;
@@ -89,12 +95,12 @@ public class Room {
         this.roomRender = null;
         playersInside = new LinkedList<>();
     }
-     /*
-        Constructor with six parameters
-        @boolean isLocked to checkif room is locked
-        @int doorID to check if the id of the door
+     /**
+      Creates a room object at the specified coordinates with a key
+        @boolean whether or not room is locked
+        @int doorID hashID of the door;
         @boolean isATrap to check if door has a trap
-        @Key key to have a refrence to key value
+        @Key key A key to place in the room for players to rush to
         @int x to setup room at grid location
         @int y to setup room at grid location
     */
@@ -109,33 +115,14 @@ public class Room {
         playersInside = new LinkedList<>();
     }
     
-     /*
-        Constructor with seven parameters
-        @boolean isLocked to checkif room is locked
-        @int doorID to check if the id of the door
-        @boolean isATrap to check if door has a trap
-        @Key key to have a refrence to key value
-        @boolean isFinalRoom used to generate a room that is the last room
-        @int x to setup room at grid location
-        @int y to setup room at grid location
-    */
-    public Room(boolean isLocked, int doorID, boolean isATrap, Key key, boolean isFinalRoom, int x, int y) {
-        this.isLocked = isLocked;
-        this.doorID = doorID;
-        this.isATrap = isATrap;
-        this.roomKey = key;
-        this.x = x;
-        this.y = y;
-        this.roomRender = null;
-        this.isFinalRoom = isFinalRoom;
-        playersInside = new LinkedList<>();
-    }
-    
     /**checks for a trap when a player comes into a room
      *if room does have a trap, the player takes a random amount damage
      * Damage taken can be no less than 1
-     * In addition
+     * @param player the player that is entering this room
+     *
+     *
      * Justin Lamberson
+     * Darragh O'Halloran
      */
     public boolean playerEntry(Player player){
         boolean wasTrapped = isATrap;
@@ -162,8 +149,12 @@ public class Room {
     
     
     /**
-     * method for removing a player from a room and returning that player
+     * method for removing and returning a player from this room
+     * @param player the player that is exiting this room
+     *
+     *
      * -Justin Lamberson
+     * Darragh O'Halloran
      */
     public Player playerExiting(Player player){
         playersInside.remove(player);
@@ -186,12 +177,7 @@ public class Room {
     public boolean isATrap() {
         return isATrap;
     }
-    
-    //returns true or false if room is last room
-    public boolean isFinal() {
-        return isFinalRoom;
-    }
-    //returns key
+    //returns the game winning key or null
     public Key getKey(){
         return roomKey;
     }
@@ -230,11 +216,6 @@ public class Room {
         this.doorID = doorID;
     }
 
-    //sets the room type
-    public void setFinal(boolean last){
-        isFinalRoom = last;
-    }
-
     //sets the trap type
     public void setATrap(boolean ATrap) {
         isATrap = ATrap;
@@ -248,16 +229,6 @@ public class Room {
     public void setRoomRender(Rectangle roomRender) {
         this.roomRender = roomRender;
     }
-    
-//
-//    public HashMap<Integer, Player> getPlayersInside() {
-//        return playersInside;
-//    }
-//
-//    public void setPlayersInside(HashMap<Integer, Player> playersInside) {
-//        this.playersInside = playersInside;
-//    }
-
 
     //set the players inside
     public void setPlayersInside(LinkedList<Player> playersInside) {
@@ -278,20 +249,9 @@ public class Room {
 
     @Override
     public int hashCode() {
-        return Objects.hash(doorID, isATrap);
+        return Integer.hashCode(doorID);
     }
 
-    /**
-     * a debug method in order to populate the room with both a player
-     * and a key
-     */
-    public void debugInitialize(){
-        for(int i = 1; i < 5; i++){
-            playersInside.add(new Player());
-        }
-        roomKey = new Key();
-
-    }
     
     public String toString() {
         return "\nPlayer Render:" + isLocked +
@@ -301,8 +261,7 @@ public class Room {
                 "\nRoom: " + playersInside +
                 "\nRoom: " + roomKey +
                 "\nGrid Row Location: " + x +
-                "\nGrid Column Location: " + y +
-                "\nKey ID: " + isFinalRoom;
+                "\nGrid Column Location: " + y;
     }
     
      @Override
@@ -321,8 +280,7 @@ public class Room {
                     && this.playersInside== a.playersInside
                     && this.roomKey== a.roomKey
                     && this.x== a.x
-                    && this.y== a.y
-                    && this.isFinalRoom== a.isFinalRoom;
+                    && this.y== a.y;
         }
         else
             return false;

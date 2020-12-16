@@ -20,12 +20,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
 import java.util.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -71,6 +69,7 @@ public class MainGameController<Vbox> {
     private Button downButton;
 
     private boolean[] deathStatus;
+    private boolean shouldPlaceKey;
     private double individualGridPaneWidth;
     private double individualGridPaneHeight;
     private static final Color[] playerColors = {Color.VIOLET, Color.ORANGE, Color.BLUE, Color.SIENNA};
@@ -108,6 +107,7 @@ public class MainGameController<Vbox> {
         labelsPane.getChildren().add(timerLabel);
     }
     public void startUp(){
+        shouldPlaceKey = true;
         numColumns = 9;
         numRows = 9;
         keyDrawn = false;
@@ -249,10 +249,12 @@ public class MainGameController<Vbox> {
                 for (int j = 0; j < currRoom.playersInside.size(); j++) {
                     Player curPlayer = currRoom.playersInside.get(j);
                     Circle playerCircle = curPlayer.getPlayerRender();
-                    if(curPlayer.getHealthPool() < 0 && !deathStatus[curPlayer.getHashKey()-1]) {
+                    if(curPlayer.getHealthPool() < 0 && !deathStatus[curPlayer.getPlayerID()-1]) {
                         curPlayer.getPlayerRender().setFill(Color.BLACK);
+                        if(curPlayer.getKey() != null)
                         playersInRoom.add(playerCircle, xYOffsets[0], xYOffsets[1]);
-                        deathStatus[curPlayer.getHashKey()-1] = true;
+                        deathStatus[curPlayer.getPlayerID()-1] = true;
+
                     }
                     else if(curPlayer.getHealthPool() > 0){
                         playersInRoom.add(playerCircle, xYOffsets[0], xYOffsets[1]);
@@ -275,6 +277,7 @@ public class MainGameController<Vbox> {
         
         //Groups just add an extra layer of organization. In this case not necessary, but trying to show of some of the syntax too
     private void placeKeyOnMap() {
+        System.out.println(!gameLogic.getKey().playerCarrying());
         if (!gameLogic.getKey().playerCarrying()) {
             Image keyPic = new Image("smallKey.png");
             keyDrawn = true;
@@ -286,6 +289,7 @@ public class MainGameController<Vbox> {
                 mainGridPane.getChildren().remove(keyImage);
                 keyDrawn = false;
             }
+            System.out.println("Key drawn at: " + gameLogic.getKey().getX() + "," +gameLogic.getKey().getY());
             mainGridPane.add(keyImage, gameLogic.getKey().getX(), gameLogic.getKey().getY());
         }
     }
@@ -304,24 +308,6 @@ public class MainGameController<Vbox> {
         //timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(GAME_TIME+1);
         timeline.play();
-//        long endTime = 60;
-//        DateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
-//        final Timeline timeline = new Timeline(
-//                new KeyFrame(
-//                        Duration.millis( 500 ),
-//                        event -> {
-//                            long diff = endTime - System.currentTimeMillis();
-//                            if ( diff < 0 ) {
-//                                //  timeLabel.setText( "00:00:00" );
-//                                timerLabel.setText( timeFormat.format( 0 ) );
-//                            } else {
-//                                timerLabel.setText( timeFormat.format( diff ) );
-//                            }
-//                        }
-//                )
-//        );
-//        timeline.setCycleCount( Animation.INDEFINITE );
-//        timeline.play();
     }
     private void populateArray(){
         for (Node child : mainGridPane.getChildren()) {
@@ -464,7 +450,7 @@ public class MainGameController<Vbox> {
             trapped = gameLogic.playerMoves(player);
             if(trapped){
                 System.out.println("Cell was trapped! Health left: " + player.getHealthPool());
-                healthBarUpdaters.get(player.getHashKey()-1).set(player.getHealthPool()/(double)Player.getDefaultHealth());
+                healthBarUpdaters.get(player.getPlayerID()-1).set(player.getHealthPool()/(double)Player.getDefaultHealth());
             }
             gridPaneNodes[player.getX()][player.getY()].add(player.getPlayerRender(), 0, 0);
             keyFound();

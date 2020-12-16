@@ -4,15 +4,16 @@ public class Key {
     //reference to the room the key unlocks
     private Room roomUnlock;
 
-    //used if the game master wishes the key to do more damage to other players when aquired
+    //To provide the ability to scale up key damage ( not implemented )
     private int damageMagnitude;
-    //auto-scaling damage maybe
-    //damage magnitude of the key
+
+    //Default scaling
     private static int magnitudeModifier = 1;
     
     //location of the key on the map
     private int x,y;
 
+    //Key hash;
     private int keyID;
 
     //Default constructor 
@@ -46,7 +47,7 @@ public class Key {
     //method for player to retrieve key
     public void playerTakes(Player player){
         player.setKey(this);
-        keyID = player.getHashKey();
+        keyID = player.getPlayerID();
     }
     
     //method for player to keep track of carring the key
@@ -81,7 +82,19 @@ public class Key {
     public int getY() {
         return y;
     }
-    
+
+    public Room getRoomUnlock() {
+        return roomUnlock;
+    }
+
+    public int getKeyID() {
+        return keyID;
+    }
+
+    public void setKeyID(int keyID) {
+        this.keyID = keyID;
+    }
+
     //sets the room reference
     public void setMyRoom(Room myRoom) {
         this.roomUnlock = myRoom;

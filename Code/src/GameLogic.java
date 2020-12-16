@@ -112,7 +112,7 @@ public class GameLogic{
                     traps++;
                     roomNumber++;
                 } else if (x == 8 && y == 8){
-                    roomList.put(new Point2D(x, y), new Room(true, roomNumber, false, x, y));
+                    roomList.put(new Point2D(x, y), new FinalRoom(roomNumber,x, y));
                     roomNumber++;
                 }
                 else
@@ -173,7 +173,10 @@ public class GameLogic{
 
             //TODO: Fix issue with rehashing players
             trap = newRoom.playerEntry(player);
-            player.setCurrentRoom(newRoom);
+            if(player.getHealthPool() < 0)
+                player.playerDead();
+            else
+                player.setCurrentRoom(newRoom);
 
 
         //}
@@ -205,6 +208,7 @@ public class GameLogic{
      * @param p is the player referenced
      */
     public boolean checkMove(Player p){
+        System.out.println(p.getCurrentRoom().getClass().getName());
         if(p.getHealthPool() < 0){
             return false;
         }
