@@ -1,3 +1,9 @@
+/*
+        Basic Key object which stores a reference to the door it opens, as well as misc information about it's place on the grid, and potentially hashing for later implementations of this game
+
+ */
+
+
 //Edited by Svetozar Draganitchki
 public class Key {
 
@@ -148,5 +154,6 @@ public class Key {
         else
             return false;
     }
+
 
 }

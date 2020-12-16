@@ -1,34 +1,40 @@
-import javafx.geometry.Point2D;
+/*
+    Main Game Logic Controller, does all of the heavy lifting and works alongside the MainGameController to display things in the GUI and handle player movement(s).
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+    The main features are a special key, and two hashmaps for the players and rooms within this game-like maze.
+
+    It also stores a required width/height (number of columns/rows ) to enable building within a gridpane
+
+
+ */
+
+
+import javafx.geometry.Point2D;
 import java.util.HashMap;
 import java.util.Random;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *  By Svetozar Draganitchki
- * 
- */
 public class GameLogic{
-    //TODO: Figure out rehashing - how do we actually do it, is it an automatic call?
-    //private Room[][] mapLayout;                                          //TODO: Change to 2D array potentially.
-
+    //HashMap of all rooms within the game
     private HashMap<Point2D, Room> roomList;
+
+    //The key that opens the game-winning room
     private Key key;
+
+    //HashMap of all the players in the game
     private HashMap<Integer, Player> playerList;
+
+    //Max values for the game
     private int maxPlayers;
     private int gridRows;
     private int gridColumns;
-    private static final int trapChance = 60;
+
+    //Trap Chance and the unused numTraps to assist with spawning of traps
+    private static final int trapChance = 35;
     private static final int numTraps = 20;
 
-    
+    /**
+     *  NO args constructor
+     */
     public GameLogic(){
         roomList = new HashMap<>();
         playerList = new HashMap<>();
@@ -38,6 +44,10 @@ public class GameLogic{
         gridRows = 9;
     }
 
+    /**
+     *
+     * @param maxPlayers max players in the game
+     */
     public GameLogic(int maxPlayers) {
         roomList = new HashMap<>();
         playerList = new HashMap<Integer, Player> ();
@@ -47,6 +57,12 @@ public class GameLogic{
         gridRows = 9;
     }
 
+    /**
+     *
+     * @param maxPlayers max players in the game
+     * @param gridColumns max columns in the game
+     * @param gridRows max rows in the game
+     */
     public GameLogic(int maxPlayers, int gridColumns, int gridRows) {
         key = null;
         playerList = new HashMap<Integer, Player> ();
@@ -57,14 +73,7 @@ public class GameLogic{
         this.gridRows = gridRows;
     }
 
-
-    public GameLogic(Room[][] mapLayout, Key key, HashMap<Integer, Player> playerList){
-        playerList = new HashMap<Integer, Player> ();
-        roomList = new HashMap<>();
-        this.key = key;
-        this.playerList = playerList;
-        mapInitializing(-1, -1);
-    }
+    /**
 
 
     /**
@@ -72,7 +81,13 @@ public class GameLogic{
      * players and trapped rooms at the initialization of the
      * game when both parameters are -1
      * otherwise both the number of players and trapped rooms may be changed
-     * or only one may be changed-Justin Lamberson
+     * or only one may be changed
+     *
+     * -Justin Lamberson
+     *
+     * Darragh O'Halloran
+     * @param players number of players to initialize
+     * @param trappedRooms unused but would set the number of trapped Rooms to cap it at something
      */
     public void mapInitializing(int players, int trappedRooms){
         //method assumes the map generated is a 9 x 9
@@ -80,44 +95,24 @@ public class GameLogic{
 
         int roomNumber = 1;
 
-        //traps is max number of traps
         int traps = 0;
-//        if(trappedRooms > -1){
-//            traps = trappedRooms;
-//        } else {
-//            traps = 10;
-//        }
-
-        //loop initializes all rooms
-//        for(int i = 0; i < 81; i++){
-//            if(rand.nextInt(101) < 50 || traps >= 0){
-//                traps--;
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, true, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }else if(roomNumber == 81){
-//                mapLayout.put(roomNumber, new Room(true, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//            } else {
-//                mapLayout.put(roomNumber, new Room(false, roomNumber, false, new Key(mapLayout.get(i) ,1) ));
-//                roomNumber++;
-//            }
-//        }
-        //loop initializes all rooms
         for(int y = 0 ; y < 9; y++)
         {
             for(int x = 0 ; x < 9; x++)
             {
-                if(rand.nextInt(100) <= trapChance && traps <= numTraps){
+                //~ trapChance % to spawn a trap
+                if(rand.nextInt(100) <= trapChance){
                     //System.out.println("Set Trap!");
-                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));
+                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, true, x, y));           //We make a new room with a trap
                     traps++;
                     roomNumber++;
                 } else if (x == 8 && y == 8){
-                    roomList.put(new Point2D(x, y), new FinalRoom(roomNumber,x, y));
+                    roomList.put(new Point2D(x, y), new FinalRoom(roomNumber,x, y));                                    //The final room is special. It ends the game
                     roomNumber++;
                 }
                 else
                 {
-                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, false, x, y));
+                    roomList.put(new Point2D(x, y), new Room(false, roomNumber, false, x, y));          //Otherwise we leave it harmless
                     roomNumber++;
                 }
             }
@@ -134,7 +129,9 @@ public class GameLogic{
 
 
         //generates the number of players specified by the variable players
-        //generates the players at the top right of the map
+        //generates the players at the top left of the map (0,0)
+
+        //-1 is default value, so we check to a void issues
         if(players == -1){
             for(int i = 0; i < 4; i++){
                 playerList.put(i+1, new Player(roomList.get(new Point2D(0, 0)), 0 ,0, i+1));
@@ -149,7 +146,7 @@ public class GameLogic{
         }
 
     }
-    /*
+    /**
         By Svetozar Draganitchki
         method that checks if player can enter room
     */
@@ -159,19 +156,24 @@ public class GameLogic{
         }
         return true;
     }
-    /*
-        playerMoves depeding on flag and point parameters
-        @param int flag the forward and reverse direction
-        @param int point the left and right direction
-    */
 
+    /**
+     * Darragh O'Halloran
+     * Allows a player to move into a room, or whisks them away to the underworld if they died due to their move
+     *
+     * @param player    The player which is moving
+     * @return  whether or not the player encountered a trap
+     */
     public boolean playerMoves(Player player){
         boolean trap;
         Room newRoom = roomList.get(new Point2D(player.getX(), player.getY()));
         trap = false;
-        //TODO: Fix issue with rehashing players
+
+        //If the trap kills the player we send it to the underworld
         if(player.getHealthPool() < 0)
             player.playerDead();
+
+        //Otherwise we let the move onto the next room
         else{
             trap = newRoom.playerEntry(player);
             player.setCurrentRoom(newRoom);
@@ -192,15 +194,22 @@ public class GameLogic{
     }
 
     /**
+     * This checks to see if the move the player made is allowed or not. If it's not, it reverts their coordinates back to their
+     * previous position
+     *
+     * Darragh O'Halloran
      * checks that a player has not gone out of bounds
      * @param p is the player referenced
+     * @param flag which coordinate plane we're moving on 1 = y 0 = x
+     * @param oldPoint the oldPoint, X or Y based on flag's value
      */
     public boolean checkMove(Player p, int flag, int oldPoint){
         boolean fairMove = true;
         int x = p.getX();
 
+        //Checking for out of bounds
         int y = p.getY();
-        if(x < 0){
+        if(x < 0){                          //X Bounds
             p.setX(0);
             fairMove = false;
         } else if (x >= gridColumns){
@@ -208,15 +217,16 @@ public class GameLogic{
             fairMove = false;
         }
 
-        if(y < 0){
+        if(y < 0){                          //Y bounds
             p.setY(0);
             fairMove = false;
         } else if(y >= gridRows){
             p.setY(gridRows-1);
             fairMove = false;
         }
-        System.out.println(p.getCurrentRoom().getClass().getName());
-//        if(-1 < p.getY() > 9 && -1 < p.getX() > 9)
+
+
+        //Checking to see player tried moving before we notice they're dead, or trying to move into the last room without a key
         Room roomToMove = (roomList.get(new Point2D(p.getX(), p.getY())));
         if(p.getHealthPool() < 0 || roomToMove.getClass() == FinalRoom.class && p.getKey() == null){
             if(flag == 0){
@@ -231,7 +241,10 @@ public class GameLogic{
         //System.out.println(p.getKey() == null);
         return fairMove;
     }
-    
+
+    /*
+        Getters and Setters
+     */
     public Player getPlayer(int playerID){
         return playerList.get(playerID);
     }
