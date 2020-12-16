@@ -12,7 +12,7 @@ public class TextTester {
         for (int x = 0; x < gamelogic.getGridRows(); x++) {
             for (int y = 0; y < gamelogic.getGridColumns(); y++) {
                 Room room = gamelogic.getRoom(x, y);
-                System.out.println("Room Cords: " + room.getX() + ", " + room.getY() + "\nIs locked? " + room.isLocked() + "\nDoor ID: " + room.getDoorID() + "\nTrapped? " + room.isATrap());
+                System.out.println("Room Cords: " + room.getX() + ", " + room.getY() + "\nIs locked? " + room.getIsLocked() + "\nDoor ID: " + room.getDoorID() + "\nTrapped? " + room.isATrap());
                 System.out.print("Key? ");
                 if (room.getKey() == null) {
                     System.out.println("No");
