@@ -254,14 +254,7 @@ public class Room {
 
     
     public String toString() {
-        return "\nPlayer Render:" + isLocked +
-                "\nKey: " + doorID +
-                "\nRoom: " + isATrap +
-                "\nRoom: " + roomRender +
-                "\nRoom: " + playersInside +
-                "\nRoom: " + roomKey +
-                "\nGrid Row Location: " + x +
-                "\nGrid Column Location: " + y;
+        return "Room at (" + x +"," + y+")";
     }
     
      @Override

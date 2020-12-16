@@ -1,3 +1,9 @@
+/*
+        Basic Key object which stores a reference to the door it opens, as well as misc information about it's place on the grid, and potentially hashing for later implementations of this game
+
+ */
+
+
 //Edited by Svetozar Draganitchki
 public class Key {
 
@@ -21,7 +27,7 @@ public class Key {
         this.roomUnlock = null;
         this.damageMagnitude = magnitudeModifier*100;   //Random magic number, mostly placeholder idea
     }
-    /*Constructor that takes two parameters
+    /**Constructor that takes two parameters
         @Room roomUnlock they room value to unlock the room
         @int damgaeMagnitude the damage a key will do if you don't pick it up
     */
@@ -30,7 +36,7 @@ public class Key {
         this.damageMagnitude = damageMagnitude*magnitudeModifier;
     }
     
-    /*Constructor that takes four parameters
+    /**Constructor that takes four parameters
         @Roomt roomUnlock they room value to unlock the room
         @int damgaeMagnitude the damage a key will do if you don't pick it up
         @int x the cordinational direction to keep track of key on map
@@ -50,7 +56,7 @@ public class Key {
         keyID = player.getPlayerID();
     }
     
-    //method for player to keep track of carring the key
+    //method for player to keep track of carrying the key
     public boolean playerCarrying(){
         return keyID != -1;
     }
@@ -126,12 +132,7 @@ public class Key {
     }
     
     public String toString() {
-        return "\nRooms" + roomUnlock +
-                "\nKey Damage: " + damageMagnitude +
-                "\nKey Multiplier: " + magnitudeModifier +
-                "\nGrid Row Location: " + x +
-                "\nGrid Column Location: " + y +
-                "\nKey ID " + keyID;
+        return "" + keyID;
     }
     
      @Override
@@ -153,5 +154,6 @@ public class Key {
         else
             return false;
     }
+
 
 }
