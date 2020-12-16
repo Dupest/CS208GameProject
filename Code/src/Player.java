@@ -117,18 +117,28 @@ public class Player {
     }
 
     //By Svetozar Draganitchki
-    public void moveRight(){ x++; }
+    public int moveRight(){
+        int oldX = x;
+        x++;
+        return oldX;
+    }
     
-    public void moveLeft(){
+    public int moveLeft(){
+        int oldX = x;
         x--;
+        return oldX;
     }
     
-    public void moveDown(){
+    public int moveDown(){
+        int oldY = y;
         y++;
+        return oldY;
     }
     
-    public void moveUp(){
+    public int moveUp(){
+        int oldY = y;
         y--;
+        return oldY;
     }
     
     public int getX(){

@@ -165,29 +165,17 @@ public class GameLogic{
         @param int point the left and right direction
     */
 
-    public boolean playerMoves(Player player){             //Point = 1 or -1
+    public boolean playerMoves(Player player){
         boolean trap;
-        //We assume point == y
-        //if(flag == 1){
-            Room newRoom = roomList.get(new Point2D(player.getX(), player.getY()));
-
-            //TODO: Fix issue with rehashing players
+        Room newRoom = roomList.get(new Point2D(player.getX(), player.getY()));
+        trap = false;
+        //TODO: Fix issue with rehashing players
+        if(player.getHealthPool() < 0)
+            player.playerDead();
+        else{
             trap = newRoom.playerEntry(player);
-            if(player.getHealthPool() < 0)
-                player.playerDead();
-            else
-                player.setCurrentRoom(newRoom);
-
-
-        //}
-
-//        //We assume point == x
-//        else{
-//            Room newRoom = roomList.get(new Point2D(point, player.getCurrentRoom().getY()));
-//            //TODO: Fix issue with rehashing players
-//            trap = newRoom.playerEntry(player);
-//            player.setCurrentRoom(newRoom);
-//        }
+            player.setCurrentRoom(newRoom);
+        }
         return trap;
     }
     
@@ -209,7 +197,8 @@ public class GameLogic{
      */
     public boolean checkMove(Player p){
         System.out.println(p.getCurrentRoom().getClass().getName());
-        if(p.getHealthPool() < 0){
+        if(p.getHealthPool() < 0 || (p.getCurrentRoom().getClass() == FinalRoom.class && p.getKey() == null)){
+
             return false;
         }
         boolean fairMove = true;
